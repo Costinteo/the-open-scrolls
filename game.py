@@ -45,7 +45,7 @@ class Game():
 
         self.matrix = [[0 for _ in range(COLS)] for _ in range(ROWS)] 
 
-        walls = 25
+        walls = 50
         for x in range(1,COLS):
             for y in range(1,ROWS):
                 if not walls:

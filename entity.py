@@ -10,9 +10,11 @@ class Attribute():
 
 # base class for any entity that has position and sprite
 class Entity():
-    def __init__(self, x = 0, y = 0):
+    def __init__(self, x = 0, y = 0, solid = False):
         self.x = x
         self.y = y
+        # solid attribute will define collision
+        self.solid = solid
         self.updateSpritePosition(self.x, self.y)
 
     def move(self, newX, newY):
@@ -45,4 +47,3 @@ class Character(Entity):
         self.attributes["STR"] = STR    # Strength
         self.attributes["INT"] = INT    # Intelligence
         self.attributes["AGI"] = AGI    # Agility
-
