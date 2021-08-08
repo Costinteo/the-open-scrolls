@@ -2,14 +2,8 @@ import pygame
 from src.util import *
 from src.constants import *
 
-# unused
-class Attribute():
-    def __init__(self, name, value):
-        self.name = name
-        self.value = value
-
 # base class for any entity that has position and sprite
-class Entity():
+class Entity:
     # variables used as "static", shared amongst instances of this class
     # every time the class is instantiated they are incremented (and used to set ID)
     # every time objects of this class are deleted entityCount is decremented
@@ -48,6 +42,7 @@ class Entity():
         else PLAYERCOLOUR
         
         lineThickness = 1 if self.name == "Walkable" else 0
+
         pygame.draw.rect(self.surface, colour, self.sprite, lineThickness)
 
     def __del__(self):
@@ -79,7 +74,7 @@ class Character(Entity):
     def updateSpritePosition(self, newX, newY):
         x = getPadding(newX, DrawInfo.X_OFFSET, 5)
         y = getPadding(newY, DrawInfo.Y_OFFSET, 5)
-        self.sprite = pygame.Rect(x + 5, y + 5, DrawInfo.ENTITY_WIDTH, DrawInfo.ENTITY_HEIGHT)
-        # we add 5 to each coordinate to center the sprite on the tile,
+        self.sprite = pygame.Rect(x + 6, y + 6, DrawInfo.ENTITY_WIDTH, DrawInfo.ENTITY_HEIGHT)
+        # we add 6 to each coordinate to center the sprite on the tile,
         # considering the origin of the sprite is top left and the difference
         # in width and height between cells and dynamic entities is 10

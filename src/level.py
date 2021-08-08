@@ -1,6 +1,6 @@
 from src.entity import *
 
-class Level():
+class Level:
 
     def __init__(self, levelPath, screen):
         mapInfo = open(levelPath)
@@ -12,19 +12,7 @@ class Level():
         self.height, self.width = map(int, mapInfo.readline().split())
 
         # reinitializing the DrawInfo data
-        DrawInfo.ROWS = self.height
-        DrawInfo.COLS = self.width
-
-        DrawInfo.X_OFFSET = ((WIDTH - PADDING * 2) // DrawInfo.COLS)
-        DrawInfo.Y_OFFSET = ((HEIGHT - PADDING * 2) // DrawInfo.ROWS)
-        
-        DrawInfo.CELL_WIDTH = DrawInfo.X_OFFSET + 1
-        DrawInfo.CELL_HEIGHT = DrawInfo.Y_OFFSET + 1
-        
-        # 10 represents how many pixels smaller the entity is
-        # compared to a cell (static tiles)
-        DrawInfo.ENTITY_WIDTH = DrawInfo.X_OFFSET - 10
-        DrawInfo.ENTITY_HEIGHT = DrawInfo.Y_OFFSET - 10
+        DrawInfo.update(self.height, self.width)
 
         self.matrix = [[] for _ in range(self.height)]
 
@@ -37,6 +25,12 @@ class Level():
             for x in range(self.width):
 
                 tile = line[x]
+
+                # legend:
+                # + : Wall
+                # . : Walkable
+                # P : Player origin
+                # x : Enemy origin
 
                 if tile == "+":
                     newEntity = Entity(self.screen, x=x, y=y, name="Wall", solid=True)
@@ -51,17 +45,28 @@ class Level():
 
                 # add entity to entity dict regardless of class
                 self.entities[newEntity.id] = newEntity
-                self.matrix[y].append(newEntity)
-        
-        del(line)
-        del(tile)
+
+                if tile == "+":
+                    newEntityForMatrix = Entity(self.screen, x=x, y=y, name="Wall", solid=True)
+                else:
+                    newEntityForMatrix = Entity(self.screen, x=x, y=y, name="Walkable", solid=False)
+                    
+                self.matrix[y].append(newEntityForMatrix)
+
+        # print current map
+        for y in range(self.height):
+            for x in range(self.width):
+                print("+" if self.matrix[y][x].name == "Wall" else ".", end="")
+            print("\n", end="")
 
     def draw(self):
         for ent in self.entities.values():
-            # skip player so it gets drawn on top of everything else
-            if ent.id == self.player.id:
+            # skip player and enemies so they get drawn on top of everything else
+            if ent.id == self.player.id or ent.id in self.enemies:
                 continue
             ent.draw()
         
+        for enemy in self.enemies.values():
+            enemy.draw()
         # draw player on top of everything else
         self.entities[self.player.id].draw()
