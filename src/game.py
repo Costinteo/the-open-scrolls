@@ -52,14 +52,14 @@ class Game():
             if not isPositionSolid(self.currentLevel.matrix, self.currentLevel.player.x, max(0, self.currentLevel.player.y - 1)):
                 self.currentLevel.player.move(self.currentLevel.player.x, max(0, self.currentLevel.player.y - 1))
         elif key == pygame.K_DOWN:
-            if not isPositionSolid(self.currentLevel.matrix, self.currentLevel.player.x, min(ROWS - 1, self.currentLevel.player.y + 1)):
-                self.currentLevel.player.move(self.currentLevel.player.x, min(ROWS - 1, self.currentLevel.player.y + 1))
+            if not isPositionSolid(self.currentLevel.matrix, self.currentLevel.player.x, min(self.currentLevel.height, self.currentLevel.player.y + 1)):
+                self.currentLevel.player.move(self.currentLevel.player.x, min(self.currentLevel.height - 1, self.currentLevel.player.y + 1))
         if key == pygame.K_LEFT:
             if not isPositionSolid(self.currentLevel.matrix, max(0, self.currentLevel.player.x - 1), self.currentLevel.player.y):
                 self.currentLevel.player.move(max(0, self.currentLevel.player.x - 1), self.currentLevel.player.y)
         elif key == pygame.K_RIGHT:
-            if not isPositionSolid(self.currentLevel.matrix, min(COLS - 1, self.currentLevel.player.x + 1), self.currentLevel.player.y):
-                self.currentLevel.player.move(min(COLS - 1, self.currentLevel.player.x + 1), self.currentLevel.player.y)
+            if not isPositionSolid(self.currentLevel.matrix, min(self.currentLevel.width - 1, self.currentLevel.player.x + 1), self.currentLevel.player.y):
+                self.currentLevel.player.move(min(self.currentLevel.width - 1, self.currentLevel.player.x + 1), self.currentLevel.player.y)
         
 
 

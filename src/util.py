@@ -9,3 +9,5 @@ def checkMovementEvent(key):
 
 def isPositionSolid(matrix, x, y):
     return True if matrix[y][x].solid else False
+
+

@@ -1,6 +1,6 @@
 import pygame
-from util import *
-from constants import *
+from src.util import *
+from src.constants import *
 
 # unused
 class Attribute():
@@ -37,12 +37,16 @@ class Entity():
         self.updateSpritePosition(self.x, self.y)
 
     def updateSpritePosition(self, newX, newY):
-        self.sprite = pygame.Rect(getPadding(newX, X_OFFSET, 5), getPadding(newY, Y_OFFSET, 5), CELL_WIDTH, CELL_HEIGHT)
+        x = getPadding(newX, DrawInfo.X_OFFSET, 5)
+        y = getPadding(newY, DrawInfo.Y_OFFSET, 5)
+        self.sprite = pygame.Rect(x, y, DrawInfo.CELL_WIDTH, DrawInfo.CELL_HEIGHT)
 
     def draw(self):
+
         colour = WALLSCOLOUR if self.name == "Wall" or self.name == "Walkable" \
         else ENEMYCOLOUR if self.name == "Enemy" \
         else PLAYERCOLOUR
+        
         lineThickness = 1 if self.name == "Walkable" else 0
         pygame.draw.rect(self.surface, colour, self.sprite, lineThickness)
 
@@ -73,4 +77,9 @@ class Character(Entity):
         self.attributes["AGI"] = AGI    # Agility
 
     def updateSpritePosition(self, newX, newY):
-        self.sprite = pygame.Rect(getPadding(newX, X_OFFSET, 5), getPadding(newY, Y_OFFSET, 5), ENTITY_WIDTH, ENTITY_HEIGHT)
+        x = getPadding(newX, DrawInfo.X_OFFSET, 5)
+        y = getPadding(newY, DrawInfo.Y_OFFSET, 5)
+        self.sprite = pygame.Rect(x + 5, y + 5, DrawInfo.ENTITY_WIDTH, DrawInfo.ENTITY_HEIGHT)
+        # we add 5 to each coordinate to center the sprite on the tile,
+        # considering the origin of the sprite is top left and the difference
+        # in width and height between cells and dynamic entities is 10
