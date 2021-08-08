@@ -41,4 +41,10 @@ class Level():
 
     def draw(self):
         for ent in self.entities.values():
+            # skip player so it gets drawn on top of everything else
+            if ent.id == self.player.id:
+                continue
             ent.draw()
+        
+        # draw player on top of everything else
+        self.entities[self.player.id].draw()
