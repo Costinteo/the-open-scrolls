@@ -3,6 +3,7 @@ import random
 from util import *
 from constants import *
 from entity import *
+from level import *
 
 # init pygame
 successes, failures = pygame.init()
@@ -43,36 +44,22 @@ class Game():
         pygame.display.set_caption("The Open Scrolls")
         self.clock = pygame.time.Clock()
 
-        self.matrix = [[0 for _ in range(COLS)] for _ in range(ROWS)] 
-
-        walls = 50
-        for x in range(1,COLS):
-            for y in range(1,ROWS):
-                if not walls:
-                    break
-                isWall = random.randint(0,1)
-                if isWall:
-                    walls -= 1
-                self.matrix[y][x] = isWall
-
-
-        self.player = Character()
-        print(self.matrix)
+        self.currentLevel = Level("levels/dungeon.map", self.screen)
 
 
     def handleMovementEvent(self, key):
         if key == pygame.K_UP:
-            if not isPositionOccupied(self.matrix, self.player.x, max(0, self.player.y - 1)):
-                self.player.move(self.player.x, max(0, self.player.y - 1))
+            if not isPositionSolid(self.currentLevel.matrix, self.currentLevel.player.x, max(0, self.currentLevel.player.y - 1)):
+                self.currentLevel.player.move(self.currentLevel.player.x, max(0, self.currentLevel.player.y - 1))
         elif key == pygame.K_DOWN:
-            if not isPositionOccupied(self.matrix, self.player.x, min(ROWS - 1, self.player.y + 1)):
-                self.player.move(self.player.x, min(ROWS - 1, self.player.y + 1))
+            if not isPositionSolid(self.currentLevel.matrix, self.currentLevel.player.x, min(ROWS - 1, self.currentLevel.player.y + 1)):
+                self.currentLevel.player.move(self.currentLevel.player.x, min(ROWS - 1, self.currentLevel.player.y + 1))
         if key == pygame.K_LEFT:
-            if not isPositionOccupied(self.matrix, max(0, self.player.x - 1), self.player.y):
-                self.player.move(max(0, self.player.x - 1), self.player.y)
+            if not isPositionSolid(self.currentLevel.matrix, max(0, self.currentLevel.player.x - 1), self.currentLevel.player.y):
+                self.currentLevel.player.move(max(0, self.currentLevel.player.x - 1), self.currentLevel.player.y)
         elif key == pygame.K_RIGHT:
-            if not isPositionOccupied(self.matrix, min(COLS - 1, self.player.x + 1), self.player.y):
-                self.player.move(min(COLS - 1, self.player.x + 1), self.player.y)
+            if not isPositionSolid(self.currentLevel.matrix, min(COLS - 1, self.currentLevel.player.x + 1), self.currentLevel.player.y):
+                self.currentLevel.player.move(min(COLS - 1, self.currentLevel.player.x + 1), self.currentLevel.player.y)
         
 
 
@@ -93,7 +80,7 @@ class Game():
                 # if player presses movement key, a turn happens
                 if checkMovementEvent(event.key):
                     self.handleMovementEvent(event.key)
-                    print(self.player.x, self.player.y)
+                    print(self.currentLevel.player.x, self.currentLevel.player.y)
                     # turnEvent()
                     
 
@@ -102,12 +89,5 @@ class Game():
 
 
     def draw(self):
-        for x in range(COLS):
-            for y in range(ROWS):
-                lineThickness = 1
-                if (self.matrix[y][x]):
-                    lineThickness = 0
-                cell = pygame.Rect(getPadding(x, X_OFFSET), getPadding(y, Y_OFFSET), CELL_WIDTH, CELL_HEIGHT) 
-                pygame.draw.rect(self.screen, WALLSCOLOUR, cell, lineThickness)
-        pygame.draw.rect(self.screen, PLAYERCOLOUR, self.player.sprite)
+        self.currentLevel.draw()
 

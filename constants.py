@@ -15,7 +15,8 @@ ENTITY_HEIGHT = Y_OFFSET - 10
 # Colours and aesthetics
 BACKGROUNDCOLOUR = (255, 255, 255)
 WALLSCOLOUR = (0, 0, 0)
-PLAYERCOLOUR = (255, 0, 0)
+PLAYERCOLOUR = (0, 255, 0)
+ENEMYCOLOUR = (255, 0, 0)
 NAVY = (10, 10, 80)
 FONT = "dejavusans"
 
