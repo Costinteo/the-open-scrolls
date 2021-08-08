@@ -10,34 +10,6 @@ successes, failures = pygame.init()
 print(f"{successes} successes and {failures} failures")
 
 
-# settingsFile = None
-
-# try:
-#     settingsFile = open("settings.txt")
-# except:
-#     print("Settings file not found! Resuming with default values.")
-
-# # if settings exist, then we parse them
-# if settingsFile:
-#     screenSize = settingsFile.readline().split()
-#     WIDTH, HEIGHT = int(screenSize[0]), int(screenSize[1])
-
-#     screenSize = settingsFile.readline().split()
-#     ROWS, COLS = int(screenSize[0]), int(screenSize[1])
-#     X_OFFSET = ((WIDTH - PADDING * 2) // COLS)
-#     Y_OFFSET = ((HEIGHT - PADDING * 2) // ROWS)
-
-#     BACKGROUNDCOLOUR = tuple(list(map(int, settingsFile.readline().split())))
-#     DOTSCOLOUR = tuple(list(map(int, settingsFile.readline().split())))
-#     P1COLOUR = tuple(list(map(int, settingsFile.readline().split())))
-#     P2COLOUR = tuple(list(map(int, settingsFile.readline().split())))
-
-#     PVP = bool(int(settingsFile.readline()))
-#     ALGORITHM, DEPTH = settingsFile.readline().split()
-#     DEPTH = int(DEPTH)
-
-
-
 class Game():
     def __init__(self):
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
