@@ -1,9 +1,9 @@
 import pygame
 import random
-from util import *
-from constants import *
-from entity import *
-from level import *
+from src.util import *
+from src.constants import *
+from src.entity import *
+from src.level import *
 
 # init pygame
 successes, failures = pygame.init()

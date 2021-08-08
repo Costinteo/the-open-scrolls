@@ -1,5 +1,5 @@
 import pygame
-from constants import *
+from src.constants import *
 
 def getPadding(var, offset, extraOffset = 0):
     return var * offset + PADDING + extraOffset
