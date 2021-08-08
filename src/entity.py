@@ -59,7 +59,7 @@ class Character(Entity):
         self.exp = exp
 
         # we use a dict for attributes
-        self.attributes = dict()
+        self.attributes = {}
 
         # base attributes
         self.attributes["HP"] = HP      # Health

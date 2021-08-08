@@ -5,6 +5,7 @@ from src.util import *
 from src.constants import *
 from src.entity import *
 from src.level import *
+from src.combat import *
 
 # init pygame
 successes, failures = pygame.init()
@@ -20,13 +21,50 @@ class Game:
         self.currentLevel = Level("levels/dungeon.map", self.screen)
 
         self.inCombat = False
+        self.combat = None
 
         self.timeSinceEnemyMovement = time.time()
 
+    def update(self):
+        # sleep to sync with fps
+        self.clock.tick(FPS)
+        
+        # colour screen
+        self.screen.fill(BACKGROUNDCOLOUR)
+
+        if not self.inCombat:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    pass
+                elif event.type == pygame.KEYDOWN:
+                    # handle movement events
+                    if checkMovementEvent(event.key):
+                        self.handleMovementEvent(event.key)
+                        print(self.currentLevel.player.x, self.currentLevel.player.y)
+            
+            if time.time() - self.timeSinceEnemyMovement > 2:
+                self.timeSinceEnemyMovement = time.time()
+                self.handleEnemyMovement()
+            
+            enemy = self.checkForCombat()
+            
+            if enemy:
+                self.combat = Combat(self.currentLevel.player, enemy)
+
+        self.draw()
+        pygame.display.flip()
+
+
+    def draw(self):
+        if not self.inCombat:
+            self.currentLevel.draw()
+
+# ----------- GAME LOGIC METHODS -----------
+
     # handles player movement events
     def handleMovementEvent(self, key):
-        oldX = self.currentLevel.player.x
-        oldY = self.currentLevel.player.y
 
         if key == pygame.K_UP:
             newX = self.currentLevel.player.x
@@ -43,7 +81,6 @@ class Game:
             newY = self.currentLevel.player.y
 
         if not isPositionSolid(self.currentLevel.matrix, newX, newY):
-            swap(self.currentLevel.matrix[oldY][oldX], self.currentLevel.matrix[oldY][oldX])
             self.currentLevel.player.move(newX, newY)
 
         
@@ -51,44 +88,18 @@ class Game:
     # randomly moves enemies
     def handleEnemyMovement(self):
         for enemy in self.currentLevel.enemies.values():
-            oldX = enemy.x
-            oldY = enemy.y
             newX = enemy.x + random.randint(-1, 1)
             newY = enemy.y + random.randint(-1, 1)
             if not isPositionSolid(self.currentLevel.matrix, newX, newY):
-                swap(self.currentLevel.matrix[oldY][oldX], self.currentLevel.matrix[oldY][oldX])
                 enemy.move(newX, newY)
 
-    def update(self):
-        # sleep to sync with fps
-        self.clock.tick(FPS)
-        
-        # colour screen
-        self.screen.fill(BACKGROUNDCOLOUR)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                pass
-            elif event.type == pygame.KEYDOWN:
-                # handle movement events
-                # if player presses movement key, a turn happens
-                if checkMovementEvent(event.key):
-                    self.handleMovementEvent(event.key)
-                    print(self.currentLevel.player.x, self.currentLevel.player.y)
-                    # turnEvent()
-        
-        if time.time() - self.timeSinceEnemyMovement > 2:
-            self.timeSinceEnemyMovement = time.time()
-            self.handleEnemyMovement()
-        
-
-        self.draw()
-        pygame.display.flip()
-
-
-    def draw(self):
-        if not self.inCombat:
-            self.currentLevel.draw()
+    # sets self.inCombat to true
+    # returns the enemy playered entered in combat with
+    # returns None if player hasn't entered combat
+    def checkForCombat(self):
+        for enemy in self.currentLevel.enemies.values():
+            if enemy.x == self.currentLevel.player and enemy.y == self.currentLevel.player:
+                self.inCombat = True
+                return enemy
+        return None
 

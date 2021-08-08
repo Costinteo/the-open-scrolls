@@ -17,8 +17,8 @@ class Level:
         self.matrix = [[] for _ in range(self.height)]
 
         self.player = None
-        self.enemies = {}
-        self.entities = {}
+        self.enemies = dict()
+        self.entities = dict()
 
         for y in range(self.height):
             line = mapInfo.readline()
