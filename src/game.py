@@ -44,14 +44,13 @@ class Game:
                         self.handleMovementEvent(event.key)
                         print(self.currentLevel.player.x, self.currentLevel.player.y)
             
-            if time.time() - self.timeSinceEnemyMovement > 2:
-                self.timeSinceEnemyMovement = time.time()
-                self.handleEnemyMovement()
+            self.handleEnemyMovement()
             
             enemy = self.checkForCombat()
             
             if enemy:
                 self.combat = Combat(self.currentLevel.player, enemy)
+                self.inCombat = True
 
         self.draw()
         pygame.display.flip()
@@ -87,6 +86,9 @@ class Game:
     
     # randomly moves enemies
     def handleEnemyMovement(self):
+        if time.time() - self.timeSinceEnemyMovement <= 2:
+            return
+        self.timeSinceEnemyMovement = time.time()
         for enemy in self.currentLevel.enemies.values():
             newX = enemy.x + random.randint(-1, 1)
             newY = enemy.y + random.randint(-1, 1)

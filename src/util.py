@@ -7,6 +7,9 @@ def getPadding(var, offset, extraOffset = 0):
 def checkMovementEvent(key):
     return key == pygame.K_UP or key == pygame.K_DOWN or key == pygame.K_LEFT or key == pygame.K_RIGHT
 
+def checkAttackChoice(key):
+    return key == pygame.K_p or key == pygame.K_m
+
 def swap(a, b):
     a, b = b, a
 
