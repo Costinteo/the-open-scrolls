@@ -18,8 +18,16 @@ class Game:
         pygame.display.set_caption("The Open Scrolls")
         self.clock = pygame.time.Clock()
 
+        # used when player is in game, to change focus to level handling
+        self.inGame = True
         self.currentLevel = Level("levels/dungeon.map", self.screen)
 
+        # used when player enters a menu so the game knows to pause
+        # and change focus to menu handling
+        self.inMenu = False
+        self.menu = None
+
+        # used when player enters combat to change focus to combat handling
         self.inCombat = False
         self.combat = None
 
@@ -42,15 +50,14 @@ class Game:
                     # handle movement events
                     if checkMovementEvent(event.key):
                         self.handleMovementEvent(event.key)
-                        print(self.currentLevel.player.x, self.currentLevel.player.y)
+                        # print(self.currentLevel.player.x, self.currentLevel.player.y)
             
             self.handleEnemyMovement()
-            
-            enemy = self.checkForCombat()
-            
-            if enemy:
-                self.combat = Combat(self.currentLevel.player, enemy)
-                self.inCombat = True
+            self.checkForCombat()
+        else:
+            self.combat.update()
+                
+        # print(self.inCombat)
 
         self.draw()
         pygame.display.flip()
@@ -96,12 +103,11 @@ class Game:
                 enemy.move(newX, newY)
 
     # sets self.inCombat to true
-    # returns the enemy playered entered in combat with
-    # returns None if player hasn't entered combat
+    # begins combat
     def checkForCombat(self):
         for enemy in self.currentLevel.enemies.values():
-            if enemy.x == self.currentLevel.player and enemy.y == self.currentLevel.player:
+            if enemy.x == self.currentLevel.player.x and enemy.y == self.currentLevel.player.y:
                 self.inCombat = True
-                return enemy
-        return None
+                self.combat = Combat(self.currentLevel.player, enemy)
+                break
 

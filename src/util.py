@@ -1,4 +1,5 @@
 import pygame
+import time
 from src.constants import *
 
 def getPadding(var, offset, extraOffset = 0):
@@ -12,6 +13,11 @@ def checkAttackChoice(key):
 
 def swap(a, b):
     a, b = b, a
+
+def sleep(seconds):
+    t = time.time()
+    while time.time() - t < seconds:
+        continue
 
 # strcmp() style function of comparing stats
 def compareStat(statToCompare, firstChar, secondChar):

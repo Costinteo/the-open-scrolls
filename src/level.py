@@ -1,8 +1,9 @@
 from src.entity import *
+from src.character import *
 
 class Level:
 
-    def __init__(self, levelPath, screen):
+    def __init__(self, levelPath, screen, player = None):
         mapInfo = open(levelPath)
 
         self.screen = screen
@@ -16,10 +17,11 @@ class Level:
 
         self.matrix = [[] for _ in range(self.height)]
 
-        self.player = None
+        self.player = player
         self.enemies = dict()
         self.entities = dict()
 
+        # reading and parsing level data
         for y in range(self.height):
             line = mapInfo.readline()
             for x in range(self.width):
@@ -38,7 +40,10 @@ class Level:
                     newEntity = Entity(self.screen, x=x, y=y, name="Walkable", solid=False)
                 elif tile == "P":
                     newEntity = Character(self.screen, x=x, y=y, name="Player")
-                    self.player = newEntity
+                    # only create the player if no current character is passed
+                    # in constructor of level
+                    if not self.player:
+                        self.player = newEntity
                 elif tile == "x":
                     newEntity = Character(self.screen, x=x, y=y, name="Enemy")
                     self.enemies[newEntity.id] = newEntity
@@ -51,6 +56,7 @@ class Level:
                 else:
                     newEntityForMatrix = Entity(self.screen, x=x, y=y, name="Walkable", solid=False)
                     
+                # we only store static entities in the matrix
                 self.matrix[y].append(newEntityForMatrix)
 
         # print current map

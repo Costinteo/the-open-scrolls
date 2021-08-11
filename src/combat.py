@@ -1,4 +1,5 @@
 import pygame
+import time
 from src.util import *
 
 class Combat:
@@ -11,18 +12,30 @@ class Combat:
         self.currentCombatant = 1 if compareStat("AGI", first, second) == -1 else 0
 
         # the turn number
-        self.turn = 0
+        self.turn = 0\
+
+        self.magicMenu = None # this is where the magic menu will be
+        self.inventoryMenu = None # this is where the inventory menu will be
 
     def update(self):
 
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.QUIT:
+                    exit()
+            elif event.type == pygame.KEYDOWN:
                 if checkAttackChoice(event.key):
                     self.handleAttackChoice(event.key)
 
-        itemUsed = self.combatants[self.currentCombatant].pickWeapon()
+        # itemUsed = self.combatants[self.currentCombatant].pickWeapon()
         # make sure our tuple gets iterated circullary
         self.currentCombatant = (self.currentCombatant + 1) % 2
+
+
+        # some printing thingamajig
+        # sleeps 2 seconds too see the order of combat
+        # debug only
+        sleep(2)
+        print(self.combatants[self.currentCombatant].name)
 
     def drawInventory(self):
         pass
