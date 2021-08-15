@@ -41,8 +41,10 @@ def readCharData(pathToCharData):
     hp, st, mg = dataFile.readline.split()
     strg, intl, agi, lck = dataFile.readline().split()
     sprite = dataFile.readline()
-    inventory = dataFile.readline().split()
-    return name, lvl, exp, hp, st, mg, strg, intl, agi, lck
+    for item in dataFile.readline().split():
+        if item.find("(E)"):
+            pass
+    #return name, lvl, exp, hp, st, mg, strg, intl, agi, lck
 
 def isPositionSolid(matrix, x, y):
     return True if matrix[y][x].solid else False
