@@ -1,16 +1,19 @@
 import random
-from item import *
+from src.item import *
 from src.entity import *
 
 # base class for enemies / players
 # they have attributes (placeholder / unfinished)
 class Character(Entity):
-    def __init__(self, surface, x = 0, y = 0, name = "DEFAULT", level = 1, exp = 0, HP = 100, STA = 100, MGK = 100, STR = 10, INT = 10, AGI = 10, LCK = 1):
+    def __init__(self, surface, x = 0, y = 0, isPlayer = False, name = "DEFAULT", level = 1, exp = 0, HP = 100, STA = 100, MGK = 100, STR = 10, INT = 10, AGI = 10, LCK = 1):
 
         super().__init__(surface=surface, x=x, y=y, name=name)
 
         self.level = level
         self.exp = exp
+        
+        # for differentiating between PC and NPC
+        self.isPlayer = isPlayer
 
         # we use a dict for attributes
         self.attributes = dict()
@@ -49,6 +52,13 @@ class Character(Entity):
         # we add 5 to each coordinate to center the sprite on the tile,
         # considering the origin of the sprite is top left and the difference
         # in width and height between cells and dynamic entities is 10
+
+    def draw(self):
+
+        colour = PLAYERCOLOUR if self.isPlayer else ENEMYCOLOUR
+
+        pygame.draw.rect(self.surface, colour, self.sprite)
+
 
     def addItemToInventory(self, item):
         self.inventory.append(item)

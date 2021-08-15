@@ -41,7 +41,7 @@ class Level:
                 elif tile == ".":
                     newEntity = Entity(self.screen, x=x, y=y, name="Walkable", solid=False)
                 elif tile == "P":
-                    newEntity = Character(self.screen, x=x, y=y, name="Player")
+                    newEntity = Character(self.screen, x=x, y=y, isPlayer=True, name="Player")
                     # only create the player if no current character is passed
                     # in constructor of level
                     if not self.player:
@@ -49,8 +49,9 @@ class Level:
                 elif tile == "x":
                     # we will read the characters in order they appear
                     # we unpack char data to avoid errors in case of refactoring
-                    name, lvl, exp, hp, st, mg, strg, intl, agi, lck, equipped = readCharData(charData.readline())
-                    newEntity = Character(self.screen, x=x, y=y, name=name, level=lvl, exp=exp, HP=hp, ST=st, MG=mg, STR=strg, INT=intl, AGI=agi, LCK=lck)
+                    charName = trimmedline(charData.readline())
+                    name, lvl, exp, hp, st, mg, strg, intl, agi, lck = readCharData(charName)
+                    newEntity = Character(self.screen, x=x, y=y, name=name, level=lvl, exp=exp, HP=hp, STA=st, MGK=mg, STR=strg, INT=intl, AGI=agi, LCK=lck)
                     self.enemies[newEntity.id] = newEntity
 
                 # add entity to entity dict regardless of class

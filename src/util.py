@@ -34,17 +34,24 @@ def compareStat(statToCompare, firstChar, secondChar):
     # if they're equal return 0
     return "equal"
 
-def readCharData(pathToCharData):
-    dataFile = open(pathToCharData)
+def readCharData(charName):
+    dataFile = open("character_data/" + charName)
     name = dataFile.readline()
-    lvl, exp = dataFile.readline().split()
-    hp, st, mg = dataFile.readline.split()
-    strg, intl, agi, lck = dataFile.readline().split()
-    sprite = dataFile.readline()
+    lvl, exp = map(int, dataFile.readline().split())
+    hp, st, mg = map(int, dataFile.readline().split())
+    strg, intl, agi, lck = map(int, dataFile.readline().split())
+    # sprite not used yet
+    # sprite = dataFile.readline()
     for item in dataFile.readline().split():
         if item.find("(E)"):
             pass
-    #return name, lvl, exp, hp, st, mg, strg, intl, agi, lck
+    return name, lvl, exp, hp, st, mg, strg, intl, agi, lck
+
+def trimmedline(line):
+    if line[-1] == "\n":
+        return line[0:-1]
+    return line
+    
 
 def isPositionSolid(matrix, x, y):
     return True if matrix[y][x].solid else False

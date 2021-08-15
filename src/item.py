@@ -72,7 +72,7 @@ class Apparel(Equippable):
 
 
 class Consumable(Item):
-    def __init__(self, surface, x=0, y=0, name="DEFAULT", isPlaced=False, value=0, effect=Effect()):
+    def __init__(self, surface, x=0, y=0, name="DEFAULT", isPlaced=False, value=0, effect=None):
         super().__init__(surface=surface, x=x, y=y, name=name, isPlaced=isPlaced, value=value)
 
-        self.effect = effect
+        self.effect = effect if effect else Effect(surface=surface)

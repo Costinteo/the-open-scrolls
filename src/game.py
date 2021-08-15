@@ -20,7 +20,7 @@ class Game:
 
         # used when player is in game, to change focus to level handling
         self.inGame = True
-        self.currentLevel = Level("levels/dungeon", self.screen)
+        self.currentLevel = Level("dungeon", self.screen)
 
         # used when player enters a menu so the game knows to pause
         # and change focus to menu handling
