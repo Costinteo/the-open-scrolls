@@ -3,14 +3,16 @@ from src.character import *
 
 class Level:
 
-    def __init__(self, levelPath, screen, player = None):
-        mapInfo = open(levelPath)
+    def __init__(self, levelName, screen, player = None):
+        mapInfo = open("levels/" + levelName + ".map")
+        charData = open("levels/" + levelName + ".chardata")
 
         self.screen = screen
 
         self.name = mapInfo.readline()
-        
+
         self.height, self.width = map(int, mapInfo.readline().split())
+
 
         # reinitializing the DrawInfo data
         DrawInfo.update(self.height, self.width)
@@ -45,7 +47,10 @@ class Level:
                     if not self.player:
                         self.player = newEntity
                 elif tile == "x":
-                    newEntity = Character(self.screen, x=x, y=y, name="Enemy")
+                    # we will read the characters in order they appear
+                    # we unpack char data to avoid errors in case of refactoring
+                    name, lvl, exp, hp, st, mg, strg, intl, agi, lck, equipped = readCharData(charData.readline())
+                    newEntity = Character(self.screen, x=x, y=y, name=name, level=lvl, exp=exp, HP=hp, ST=st, MG=mg, STR=strg, INT=intl, AGI=agi, LCK=lck)
                     self.enemies[newEntity.id] = newEntity
 
                 # add entity to entity dict regardless of class

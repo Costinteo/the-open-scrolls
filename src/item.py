@@ -2,8 +2,8 @@ from src.entity import *
 
 
 class Effect:
-    def __init__(self, surface, name="DEFAULT", description="DEFAULT", effect="DEFAULT", value=0, attribute="DEFAULT",
-                 icon=None):
+    def __init__(self, surface, name="DEFAULT", description="DEFAULT", effect="DEFAULT", value=0, attribute="DEFAULT", icon=None):
+
         self.surface = surface
 
         # name and description
@@ -57,10 +57,11 @@ class Equippable(Item):
 
 
 class Weapon(Equippable):
-    def __init__(self, surface, x=0, y=0, name="DEFAULT", isPlaced=False, value=0, slot="Hand", damage=0):
+    def __init__(self, surface, x=0, y=0, name="DEFAULT", isPlaced=False, value=0, slot="Weapon", damage=0, specialization="DEFAULT"):
         super().__init__(surface=surface, x=x, y=y, name=name, isPlaced=isPlaced, value=value, slot=slot)
 
         self.damage = damage
+        self.specialization = specialization
 
 
 class Apparel(Equippable):

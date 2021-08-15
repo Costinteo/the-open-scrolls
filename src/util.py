@@ -20,19 +20,29 @@ def sleep(seconds):
         continue
 
 # strcmp() style function of comparing stats
+# but it returns strings informing of the result, for clarity
 def compareStat(statToCompare, firstChar, secondChar):
 
     # if firstChar has a greater attribute level than secondChar return 1
     if firstChar.attributes[statToCompare] > secondChar.attributes[statToCompare]:
-        return 1
+        return "greater"
 
     # if firstChar has a lesser attribute level than secondChar return -1    
     if firstChar.attributes[statToCompare] < secondChar.attributes[statToCompare]:
-        return -1
+        return "lower"
     
     # if they're equal return 0
-    return 0
-    
+    return "equal"
+
+def readCharData(pathToCharData):
+    dataFile = open(pathToCharData)
+    name = dataFile.readline()
+    lvl, exp = dataFile.readline().split()
+    hp, st, mg = dataFile.readline.split()
+    strg, intl, agi, lck = dataFile.readline().split()
+    sprite = dataFile.readline()
+    inventory = dataFile.readline().split()
+    return name, lvl, exp, hp, st, mg, strg, intl, agi, lck
 
 def isPositionSolid(matrix, x, y):
     return True if matrix[y][x].solid else False
