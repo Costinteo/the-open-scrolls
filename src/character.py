@@ -99,3 +99,14 @@ class Character(Entity):
     def receiveDamage(self, value):
         self.attributes["HP"] -= value
         self.isDead = self.attributes["HP"] <= 0
+
+    @staticmethod
+    def readCharData(charName, surface = None):
+        dataFile = open("character_data/" + charName)
+        name = dataFile.readline()
+        lvl, exp = map(int, dataFile.readline().split())
+        hp, st, mg = map(int, dataFile.readline().split())
+        strg, intl, agi, lck = map(int, dataFile.readline().split())
+        # sprite not used yet
+        # sprite = dataFile.readline()
+        return name, lvl, exp, hp, st, mg, strg, intl, agi, lck

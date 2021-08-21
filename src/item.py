@@ -1,3 +1,4 @@
+from _typeshed import Self
 from src.entity import *
 
 

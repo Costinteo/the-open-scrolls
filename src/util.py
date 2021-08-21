@@ -34,7 +34,18 @@ def compareStat(statToCompare, firstChar, secondChar):
     # if they're equal return 0
     return "equal"
 
-def readCharData(charName):
+
+def trimmedline(line):
+    if line[-1] == "\n":
+        return line[0:-1]
+    return line
+
+# yeah I have no clue how to write this properly
+# I feel like this system is overcomplicated and has to be thought out better
+def readItemData(itemName, surface = None):
+    itemData = open("item_data/" + itemName + ".itemdata")
+        
+def readCharData(charName, surface = None):
     dataFile = open("character_data/" + charName)
     name = dataFile.readline()
     lvl, exp = map(int, dataFile.readline().split())
@@ -42,16 +53,7 @@ def readCharData(charName):
     strg, intl, agi, lck = map(int, dataFile.readline().split())
     # sprite not used yet
     # sprite = dataFile.readline()
-    for item in dataFile.readline().split():
-        if item.find("(E)"):
-            pass
     return name, lvl, exp, hp, st, mg, strg, intl, agi, lck
-
-def trimmedline(line):
-    if line[-1] == "\n":
-        return line[0:-1]
-    return line
-    
 
 def isPositionSolid(matrix, x, y):
     return True if matrix[y][x].solid else False
