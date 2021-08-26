@@ -1,4 +1,3 @@
-from _typeshed import Self
 from src.entity import *
 
 
@@ -49,25 +48,26 @@ class Item(Entity):
 
 
 class Equippable(Item):
-    def __init__(self, surface, x=0, y=0, name="DEFAULT", isPlaced=False, value=0, slot="DEFAULT"):
+    def __init__(self, surface, x=0, y=0, name="DEFAULT", isPlaced=False, isEquipped=False, value=0, slot="DEFAULT"):
         super().__init__(surface=surface, x=x, y=y, name=name, isPlaced=isPlaced, value=value)
 
         # here we'll have a dictionary of effects used as enchantments on an equippable item
         self.enchantments = dict()
         self.slot = slot
+        self.isEquipped = isEquipped
 
 
 class Weapon(Equippable):
-    def __init__(self, surface, x=0, y=0, name="DEFAULT", isPlaced=False, value=0, slot="Weapon", damage=0, specialization="DEFAULT"):
-        super().__init__(surface=surface, x=x, y=y, name=name, isPlaced=isPlaced, value=value, slot=slot)
+    def __init__(self, surface, x=0, y=0, name="DEFAULT", isPlaced=False, isEquipped=False, value=0, slot="Weapon", damage=0, specialization="DEFAULT"):
+        super().__init__(surface=surface, x=x, y=y, name=name, isPlaced=isPlaced, isEquipped=isEquipped, value=value, slot=slot)
 
         self.damage = damage
         self.specialization = specialization
 
 
 class Apparel(Equippable):
-    def __init__(self, surface, x=0, y=0, name="DEFAULT", isPlaced=False, value=0, slot="DEFAULT", defense=0):
-        super().__init__(surface=surface, x=x, y=y, name=name, isPlaced=isPlaced, value=value, slot=slot)
+    def __init__(self, surface, x=0, y=0, name="DEFAULT", isPlaced=False, isEquipped=False, value=0, slot="DEFAULT", defense=0):
+        super().__init__(surface=surface, x=x, y=y, name=name, isPlaced=isPlaced, isEquipped=isEquipped, value=value, slot=slot)
 
         self.defense = defense
 

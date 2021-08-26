@@ -65,10 +65,16 @@ class Character(Entity):
 
     def equipItem(self, item):
         if item in self.inventory:
+            item.isEquipped = True
             self.currentlyEquipped[item.slot] = item
 
+    def unequipItem(self, item):
+        if item in self.inventory and self.isItemEquipped(item):
+            item.isEquipped = False
+            self.currentlyEquipped[item.slot] = None
+
     def isItemEquipped(self, item):
-        return self.currentlyEquipped[item.slot] == item
+        return self.currentlyEquipped[item.slot] == item.isEquipped
 
     def physicalAttack(self, other, item):
         if item.slot != "Weapon":
@@ -99,14 +105,3 @@ class Character(Entity):
     def receiveDamage(self, value):
         self.attributes["HP"] -= value
         self.isDead = self.attributes["HP"] <= 0
-
-    @staticmethod
-    def readCharData(charName, surface = None):
-        dataFile = open("character_data/" + charName)
-        name = dataFile.readline()
-        lvl, exp = map(int, dataFile.readline().split())
-        hp, st, mg = map(int, dataFile.readline().split())
-        strg, intl, agi, lck = map(int, dataFile.readline().split())
-        # sprite not used yet
-        # sprite = dataFile.readline()
-        return name, lvl, exp, hp, st, mg, strg, intl, agi, lck

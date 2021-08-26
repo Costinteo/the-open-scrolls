@@ -51,6 +51,7 @@ class Level:
                     # we unpack char data to avoid errors in case of refactoring
                     charName = trimmedline(charData.readline())
                     name, lvl, exp, hp, st, mg, strg, intl, agi, lck = readCharData(charName)
+                    inventory = readInventoryData(charData.readline())
                     newEntity = Character(self.screen, x=x, y=y, name=name, level=lvl, exp=exp, HP=hp, STA=st, MGK=mg, STR=strg, INT=intl, AGI=agi, LCK=lck)
                     self.enemies[newEntity.id] = newEntity
 

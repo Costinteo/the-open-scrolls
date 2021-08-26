@@ -44,6 +44,14 @@ def trimmedline(line):
 # I feel like this system is overcomplicated and has to be thought out better
 def readItemData(itemName, surface = None):
     itemData = open("item_data/" + itemName + ".itemdata")
+    fullItemName = itemData.readline()
+    fullItemDesc = itemData.readline()
+    itemType = itemData.readline()
+    equippableDerivatives = {"Equippable", "Weapon", "Apparel"}
+    if itemType in equippableDerivatives:
+        itemSlot = itemData.readline()
+        # todo: not finished yet [27.08.2021]
+        return None
         
 def readCharData(charName, surface = None):
     dataFile = open("character_data/" + charName)
@@ -54,6 +62,28 @@ def readCharData(charName, surface = None):
     # sprite not used yet
     # sprite = dataFile.readline()
     return name, lvl, exp, hp, st, mg, strg, intl, agi, lck
+
+def readInventoryData(inventoryLine):
+    inventory = []
+    for rawItem in inventoryLine.split():
+        itemName = rawItem
+        itemCount = 1
+        isEquipped = False
+        # check if item is equipped
+        if rawItem.find("[E]") != -1:
+            isEquipped = True
+            itemName = rawItem[3:]
+        # check item count
+        if rawItem.find("[") != -1 and not isEquipped:
+            quantityBeginPos = rawItem.find("[")
+            quantityEndPos = rawItem.find("]")
+            itemName = rawItem[:quantityBeginPos]
+            itemCount = int(rawItem[quantityBeginPos + 1 : quantityEndPos])
+        print(f"itemname:{itemName}, itemcount:{itemCount}, equipped:{isEquipped}")
+        itemData = readItemData(itemName)
+        
+    return []
+
 
 def isPositionSolid(matrix, x, y):
     return True if matrix[y][x].solid else False
