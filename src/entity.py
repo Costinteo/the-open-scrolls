@@ -3,6 +3,8 @@ import random
 from src.util import *
 from src.constants import *
 
+
+
 # base class for any entity that has position and sprite
 class Entity:
     # variables used as "static", shared amongst instances of this class
