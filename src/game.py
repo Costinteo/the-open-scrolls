@@ -36,7 +36,7 @@ class Game:
     def update(self):
         # sleep to sync with fps
         self.clock.tick(FPS)
-        
+
         # colour screen
         self.screen.fill(BACKGROUNDCOLOUR)
 
@@ -51,17 +51,27 @@ class Game:
                     if checkMovementEvent(event.key):
                         self.handleMovementEvent(event.key)
                         # print(self.currentLevel.player.x, self.currentLevel.player.y)
-            
+
             self.handleEnemyMovement()
             self.checkForCombat()
         else:
-            self.combat.update()
-                
+            # combat.update() function is recursive
+            # it will only stop when one side wins
+            winner, loser = self.combat.update()
+            self.inCombat = False
+            if winner.id == self.currentLevel.player.id:
+                print("You win! Your life replenishes...")
+                self.currentLevel.player.attributes["HP"] = min(self.currentLevel.player.attributes["HP"] + 50, 100)
+                self.killEnemy(loser)
+            else:
+                print("You lose! Tamriel will succumb to Oblivion, despite your best efforts...")
+                exit()
+
+
         # print(self.inCombat)
 
         self.draw()
         pygame.display.flip()
-
 
     def draw(self):
         if not self.inCombat:
@@ -77,20 +87,20 @@ class Game:
             newY = max(0, self.currentLevel.player.y - 1)
         elif key == pygame.K_DOWN:
             newX = self.currentLevel.player.x
-            newY = min(self.currentLevel.height - 1, self.currentLevel.player.y + 1)
+            newY = min(self.currentLevel.height - 1,
+                       self.currentLevel.player.y + 1)
 
         if key == pygame.K_LEFT:
             newX = max(0, self.currentLevel.player.x - 1)
             newY = self.currentLevel.player.y
         elif key == pygame.K_RIGHT:
-            newX = min(self.currentLevel.width - 1, self.currentLevel.player.x + 1)
+            newX = min(self.currentLevel.width - 1,
+                       self.currentLevel.player.x + 1)
             newY = self.currentLevel.player.y
 
-        if not isPositionSolid(self.currentLevel.matrix, newX, newY):
+        if not src.util.isPositionSolid(self.currentLevel.matrix, newX, newY):
             self.currentLevel.player.move(newX, newY)
 
-        
-    
     # randomly moves enemies
     def handleEnemyMovement(self):
         if time.time() - self.timeSinceEnemyMovement <= 2:
@@ -102,6 +112,13 @@ class Game:
             if not isPositionSolid(self.currentLevel.matrix, newX, newY):
                 enemy.move(newX, newY)
 
+
+    # deletes loser of combat
+    def killEnemy(self, enemy):
+        del self.currentLevel.entities[enemy.id]
+        del self.currentLevel.enemies[enemy.id]
+
+
     # sets self.inCombat to true
     # begins combat
     def checkForCombat(self):
@@ -110,4 +127,3 @@ class Game:
                 self.inCombat = True
                 self.combat = Combat(self.currentLevel.player, enemy)
                 break
-

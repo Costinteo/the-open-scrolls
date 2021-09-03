@@ -1,17 +1,17 @@
 import random
-from src.item import *
+import src.util
 from src.entity import *
 
 # base class for enemies / players
 # they have attributes (placeholder / unfinished)
 class Character(Entity):
-    def __init__(self, surface, x = 0, y = 0, isPlayer = False, name = "DEFAULT", level = 1, exp = 0, HP = 100, STA = 100, MGK = 100, STR = 10, INT = 10, AGI = 10, LCK = 1):
+    def __init__(self, surface, x = 0, y = 0, isPlayer = False, name = "DEFAULT", level = 1, exp = 0, HP = 100, STA = 100, MGK = 100, STR = 10, INT = 10, AGI = 10, LCK = 1, inventory = None):
 
         super().__init__(surface=surface, x=x, y=y, name=name)
 
         self.level = level
         self.exp = exp
-        
+
         # for differentiating between PC and NPC
         self.isPlayer = isPlayer
 
@@ -28,7 +28,13 @@ class Character(Entity):
             "Weapon" : None
         }
 
-        self.inventory = []
+        self.inventory = inventory
+
+        if inventory:
+            for item in self.inventory:
+                if item.isEquipped:
+                    self.equipItem(item)
+
 
         # base attributes
         # their names are of length 2 (important for differentiating them in code)
@@ -46,8 +52,8 @@ class Character(Entity):
         self.isDead = False
 
     def updateSpritePosition(self, newX, newY):
-        x = getPadding(newX, DrawInfo.X_OFFSET, 5)
-        y = getPadding(newY, DrawInfo.Y_OFFSET, 5)
+        x = src.util.getPadding(newX, DrawInfo.X_OFFSET, 5)
+        y = src.util.getPadding(newY, DrawInfo.Y_OFFSET, 5)
         self.sprite = pygame.Rect(x + 5, y + 5, DrawInfo.ENTITY_WIDTH, DrawInfo.ENTITY_HEIGHT)
         # we add 5 to each coordinate to center the sprite on the tile,
         # considering the origin of the sprite is top left and the difference
@@ -93,14 +99,16 @@ class Character(Entity):
             # damage can in the end range from 0 to max extra attribute
             damage = random.randint(0, max(extraAttrList)) * hasAttackPassed
         else:
-            # the attribute the item favours adds 10% of its value to the damage 
+            # actual base damages varies between 80% and 120% of item damage
+            # the attribute the item favours adds 10% of its value to the damage
             # 30% of the damage gets substracted if the item isn't equipped
-            damage = item.damage + 0.1 * self.attributes[item.specialization] - 0.3 * (not self.isItemEquipped(item))
+            damage = (random.randint(80,120) / 100) * item.damage + 0.1 * self.attributes[item.specialization] - 0.3 * (not self.isItemEquipped(item))
+        print(f"{self.name} attacked with {item.name}!")
+        print(f"{other.name} suffered {damage} damage!")
         self.dealDamage(other, damage)
 
     def dealDamage(self, other, value):
         other.receiveDamage(value)
-        print(f"{self.other.name} suffered {value} damage!")
 
     def receiveDamage(self, value):
         self.attributes["HP"] -= value

@@ -1,9 +1,7 @@
 import pygame
 import random
-from src.util import *
+import src.util
 from src.constants import *
-
-
 
 # base class for any entity that has position and sprite
 class Entity:
@@ -21,7 +19,7 @@ class Entity:
         self.id = Entity.lastIdUsed + 1
         Entity.lastIdUsed += 1
         Entity.entityCount += 1
-        
+
         self.x = x
         self.y = y
         # solid attribute will define collision
@@ -33,9 +31,10 @@ class Entity:
         self.y = newY
         self.updateSpritePosition(self.x, self.y)
 
+
     def updateSpritePosition(self, newX, newY):
-        x = getPadding(newX, DrawInfo.X_OFFSET, 5)
-        y = getPadding(newY, DrawInfo.Y_OFFSET, 5)
+        x = src.util.getPadding(newX, DrawInfo.X_OFFSET, 5)
+        y = src.util.getPadding(newY, DrawInfo.Y_OFFSET, 5)
         self.sprite = pygame.Rect(x, y, DrawInfo.CELL_WIDTH, DrawInfo.CELL_HEIGHT)
 
     def draw(self):
@@ -43,11 +42,10 @@ class Entity:
         colour = WALLSCOLOUR if self.name == "Wall" or self.name == "Walkable" \
         else ENEMYCOLOUR if self.name == "Enemy" \
         else PLAYERCOLOUR
-        
+
         lineThickness = 1 if self.name == "Walkable" else 0
 
         pygame.draw.rect(self.surface, colour, self.sprite, lineThickness)
 
     def __del__(self):
         Entity.entityCount -= 1
-

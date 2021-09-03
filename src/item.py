@@ -1,4 +1,4 @@
-from src.entity import *
+from src.entity import Entity
 
 
 class Effect:

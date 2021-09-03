@@ -25,6 +25,8 @@ class Combat:
 
     def update(self):
 
+        print(f"{self.combatants[0].name}: [HP:{self.combatants[0].attributes['HP']}]")
+        print(f"{self.combatants[1].name}: [HP:{self.combatants[1].attributes['HP']}]")
         print(f"{self.current.name}'s turn!")
         # only iterate through events and check for keys if player to play
         if self.current.id == self.getPlayerCharacter().id:
@@ -37,7 +39,7 @@ class Combat:
                     elif event.type == pygame.KEYDOWN:
                         if checkAttackChoice(event.key):
                             self.handleAttackChoice(event.key)
-                            
+
                             picked = True
         else:
             # this is for the AI enemy
@@ -45,8 +47,9 @@ class Combat:
             # this surely can be refactored so we only call physical attack once in update
             self.current.physicalAttack(self.other, self.current.currentlyEquipped["Weapon"])
 
-
-        print(f'{self.current.name} attacked with {self.current.currentlyEquipped["Weapon"].name}!')
+        if self.other.isDead:
+            # returns the WINNER and the LOSER
+            return self.current, self.other
 
         # make sure our tuple gets iterated circullary
         self.toPlay = 1 - self.toPlay
@@ -55,6 +58,11 @@ class Combat:
 
         # incremenet turn
         self.turn += 1
+
+        # to have a distinction between turns
+        print("---------")
+
+        return self.update()
 
     def handleAttackChoice(self, key):
         if key == pygame.K_p:
@@ -67,4 +75,3 @@ class Combat:
 
     def getPlayerCharacter(self):
         return self.combatants[0]
-

@@ -1,3 +1,4 @@
+import src.util
 from src.entity import *
 from src.character import *
 
@@ -35,34 +36,40 @@ class Level:
                 # . : Walkable
                 # P : Player origin
                 # x : Enemy origin
+                newEntity = None
 
                 if tile == "+":
                     newEntity = Entity(self.screen, x=x, y=y, name="Wall", solid=True)
                 elif tile == ".":
                     newEntity = Entity(self.screen, x=x, y=y, name="Walkable", solid=False)
                 elif tile == "P":
-                    newEntity = Character(self.screen, x=x, y=y, isPlayer=True, name="Player")
                     # only create the player if no current character is passed
                     # in constructor of level
                     if not self.player:
-                        self.player = newEntity
+                        charName = "testplayer"
+                        name, lvl, exp, hp, st, mg, strg, intl, agi, lck = src.util.DataParser.readCharData(charName)
+                        inventory = src.util.DataParser.readInventoryData("[E]scimitar")
+                        self.player = Character(self.screen, x=x, y=y, name=name, isPlayer=True, level=lvl, exp=exp, HP=hp, STA=st, MGK=mg, STR=strg, INT=intl, AGI=agi, LCK=lck, inventory=inventory)
+
+                    newEntity = self.player
                 elif tile == "x":
                     # we will read the characters in order they appear
                     # we unpack char data to avoid errors in case of refactoring
-                    charName = trimmedline(charData.readline())
-                    name, lvl, exp, hp, st, mg, strg, intl, agi, lck = readCharData(charName)
-                    inventory = readInventoryData(charData.readline())
-                    newEntity = Character(self.screen, x=x, y=y, name=name, level=lvl, exp=exp, HP=hp, STA=st, MGK=mg, STR=strg, INT=intl, AGI=agi, LCK=lck)
+                    charName = src.util.trimmedline(charData.readline())
+                    name, lvl, exp, hp, st, mg, strg, intl, agi, lck = src.util.DataParser.readCharData(charName)
+                    inventory = src.util.DataParser.readInventoryData(charData.readline())
+                    newEntity = Character(self.screen, x=x, y=y, name=name, level=lvl, exp=exp, HP=hp, STA=st, MGK=mg, STR=strg, INT=intl, AGI=agi, LCK=lck, inventory=inventory)
                     self.enemies[newEntity.id] = newEntity
 
                 # add entity to entity dict regardless of class
-                self.entities[newEntity.id] = newEntity
+                if newEntity:
+                    self.entities[newEntity.id] = newEntity
 
                 if tile == "+":
                     newEntityForMatrix = Entity(self.screen, x=x, y=y, name="Wall", solid=True)
                 else:
                     newEntityForMatrix = Entity(self.screen, x=x, y=y, name="Walkable", solid=False)
-                    
+
                 # we only store static entities in the matrix
                 self.matrix[y].append(newEntityForMatrix)
 
@@ -78,7 +85,7 @@ class Level:
             if ent.id == self.player.id or ent.id in self.enemies:
                 continue
             ent.draw()
-        
+
         for enemy in self.enemies.values():
             enemy.draw()
         # draw player on top of everything else
