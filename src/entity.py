@@ -10,7 +10,7 @@ class Entity:
     # every time objects of this class are deleted entityCount is decremented
     entityCount = 0
     lastIdUsed = -1
-    def __init__(self, surface, x = 0, y = 0, solid = False, name = "DEFAULT"):
+    def __init__(self, surface, x = 0, y = 0, solid = False, name = "DEFAULT", sprite=None):
         self.name = name
 
         # surface to draw on

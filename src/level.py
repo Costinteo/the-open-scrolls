@@ -10,10 +10,10 @@ class Level:
 
         self.screen = screen
 
-        self.name = mapInfo.readline()
+        self.name = src.util.trimmedline(mapInfo.readline())
+        self.tileset = src.util.trimmedline(mapInfo.readline())
 
         self.height, self.width = map(int, mapInfo.readline().split())
-
 
         # reinitializing the DrawInfo data
         DrawInfo.update(self.height, self.width)
@@ -31,24 +31,34 @@ class Level:
 
                 tile = line[x]
 
-                # legend:
-                # + : Wall
-                # . : Walkable
-                # P : Player origin
-                # x : Enemy origin
+                # see levels/template.map for legend
+
                 newEntity = None
 
-                if tile == "+":
-                    newEntity = Entity(self.screen, x=x, y=y, name="Wall", solid=True)
+                if tile == "-":
+                    newEntity = Entity(self.screen, x=x, y=y, name="horizontal_wall", solid=True, sprite=f"sprites/{self.tileset}/horizontal_wall")
+                elif tile == "|":
+                    newEntity = Entity(self.screen, x=x, y=y, name="vertical_wall", solid=True, sprite=f"sprites/{self.tileset}/vertical_wall")
+                elif tile == "/":
+                    newEntity = Entity(self.screen, x=x, y=y, name="topleft_wall", solid=True, sprite=f"sprites/{self.tileset}/topleft_wall")
+                elif tile == "\\":
+                    newEntity = Entity(self.screen, x=x, y=y, name="topright_wall", solid=True, sprite=f"sprites/{self.tileset}/topright_wall")
+                elif tile == "L":
+                    newEntity = Entity(self.screen, x=x, y=y, name="botleft_wall", solid=True, sprite=f"sprites/{self.tileset}/botleft_wall")
+                elif tile == "J":
+                    newEntity = Entity(self.screen, x=x, y=y, name="botright_wall", solid=True, sprite=f"sprites/{self.tileset}/botright_wall")
                 elif tile == ".":
-                    newEntity = Entity(self.screen, x=x, y=y, name="Walkable", solid=False)
+                    newEntity = Entity(self.screen, x=x, y=y, name="walkable", solid=False, sprite=f"sprites/{self.tileset}/walkable")
                 elif tile == "P":
                     # only create the player if no current character is passed
                     # in constructor of level
                     if not self.player:
                         charName = "testplayer"
                         name, lvl, exp, hp, st, mg, strg, intl, agi, lck = src.util.DataParser.readCharData(charName)
-                        inventory = src.util.DataParser.readInventoryData("[E]scimitar")
+                        # hardcoded for the player character so far
+                        # it needs a special type of save structure that I haven't implemented yet
+                        # TODO: implement save file that contains all player character data
+                        inventory = src.util.DataParser.readInventoryData("[E]scimitar [E]iron_helmet")
                         self.player = Character(self.screen, x=x, y=y, name=name, isPlayer=True, level=lvl, exp=exp, HP=hp, STA=st, MGK=mg, STR=strg, INT=intl, AGI=agi, LCK=lck, inventory=inventory)
 
                     newEntity = self.player
@@ -71,7 +81,8 @@ class Level:
                     newEntityForMatrix = Entity(self.screen, x=x, y=y, name="Walkable", solid=False)
 
                 # we only store static entities in the matrix
-                self.matrix[y].append(newEntityForMatrix)
+                if newEntityForMatrix:
+                    self.matrix[y].append(newEntityForMatrix)
 
         # print current map
         for y in range(self.height):

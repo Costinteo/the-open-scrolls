@@ -1,6 +1,10 @@
 import random
+import math
+import src.constants
 import src.util
+import src.item
 from src.entity import *
+
 
 # base class for enemies / players
 # they have attributes (placeholder / unfinished)
@@ -52,9 +56,9 @@ class Character(Entity):
         self.isDead = False
 
     def updateSpritePosition(self, newX, newY):
-        x = src.util.getPadding(newX, DrawInfo.X_OFFSET, 5)
-        y = src.util.getPadding(newY, DrawInfo.Y_OFFSET, 5)
-        self.sprite = pygame.Rect(x + 5, y + 5, DrawInfo.ENTITY_WIDTH, DrawInfo.ENTITY_HEIGHT)
+        x = src.util.getPadding(newX, src.constants.DrawInfo.X_OFFSET, 5)
+        y = src.util.getPadding(newY, src.constants.DrawInfo.Y_OFFSET, 5)
+        self.sprite = pygame.Rect(x + 5, y + 5, src.constants.DrawInfo.ENTITY_WIDTH, src.constants.DrawInfo.ENTITY_HEIGHT)
         # we add 5 to each coordinate to center the sprite on the tile,
         # considering the origin of the sprite is top left and the difference
         # in width and height between cells and dynamic entities is 10
@@ -82,6 +86,17 @@ class Character(Entity):
     def isItemEquipped(self, item):
         return self.currentlyEquipped[item.slot] == item.isEquipped
 
+    def getArmourRating(self):
+        rating = 0
+        for item in self.currentlyEquipped.values():
+            if not isinstance(item, src.item.Apparel):
+                continue
+            # hidden bonus of 25 armour rating to make it useful
+            # and to encourage wearing full armour
+            rating += item.defense + 25 if item else 0
+
+        return rating
+
     def physicalAttack(self, other, item):
         if item.slot != "Weapon":
             # if item used isn't a weapon
@@ -100,16 +115,16 @@ class Character(Entity):
             damage = random.randint(0, max(extraAttrList)) * hasAttackPassed
         else:
             # actual base damages varies between 80% and 120% of item damage
-            # the attribute the item favours adds 10% of its value to the damage
+            # the attribute the item favours adds 20% of its value to the damage
             # 30% of the damage gets substracted if the item isn't equipped
-            damage = (random.randint(80,120) / 100) * item.damage + 0.1 * self.attributes[item.specialization] - 0.3 * (not self.isItemEquipped(item))
+            damage = math.ceil((random.randint(80,120) / 100) * item.damage + 0.2 * self.attributes[item.specialization] - 0.3 * (not self.isItemEquipped(item)))
         print(f"{self.name} attacked with {item.name}!")
-        print(f"{other.name} suffered {damage} damage!")
         self.dealDamage(other, damage)
 
     def dealDamage(self, other, value):
         other.receiveDamage(value)
 
     def receiveDamage(self, value):
-        self.attributes["HP"] -= value
+        self.attributes["HP"] -= (value - math.ceil(self.getArmourRating() * 0.12))
+        print(f"{self.name} suffered {value - math.ceil(self.getArmourRating() * 0.12)} damage!")
         self.isDead = self.attributes["HP"] <= 0

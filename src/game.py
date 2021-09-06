@@ -57,7 +57,8 @@ class Game:
         else:
             # combat.update() function is recursive
             # it will only stop when one side wins
-            winner, loser = self.combat.update()
+            while not self.combat.current.isDead and not self.combat.other.isDead:
+                winner, loser = self.combat.update()
             self.inCombat = False
             if winner.id == self.currentLevel.player.id:
                 print("You win! Your life replenishes...")
@@ -76,6 +77,8 @@ class Game:
     def draw(self):
         if not self.inCombat:
             self.currentLevel.draw()
+        else:
+            self.combat.draw()
 
 # ----------- GAME LOGIC METHODS -----------
 

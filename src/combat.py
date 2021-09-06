@@ -75,3 +75,7 @@ class Combat:
 
     def getPlayerCharacter(self):
         return self.combatants[0]
+
+    def draw(self):
+        # this is where the interface will be drawn
+        pass

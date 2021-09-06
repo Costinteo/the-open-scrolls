@@ -1,0 +1,25 @@
+Level name
+Tileset name
+Height Width
+# MAP described below in characters:
+/---------o----\
+|P.......|-|...|
+|........|.|.-.|
+|.....---J.|...|
+|..........L-\.|
+|............|.|
+|.....|........|
+|..x..|....x...|
+L-----o--------J
+
+# LEGEND:
+# . : Walkable
+# | : Vertical Wall
+# - : Horizontal Wall
+# / : Top Left Corner Wall
+# \ : Top Right Corner Wall
+# L : Bottom Left Corner Wall
+# J : Bottom Right Corner Wall
+# o : Top Wall
+# x : Enemy
+# P : Player
