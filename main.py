@@ -1,6 +1,6 @@
 from src.game import *
 
-nirn = Game()
-
-while True:
-    nirn.update()
+if __name__ == "__main__":
+    nirn = Game()
+    while True:
+        nirn.update()
