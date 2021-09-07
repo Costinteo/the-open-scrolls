@@ -27,7 +27,10 @@ class Level:
         # reading and parsing level data
         for y in range(self.height):
             line = mapInfo.readline()
+            print() # prints newline
             for x in range(self.width):
+
+                print("." if line[x] == "." else line[x], sep='', end='') # prints matrix
 
                 tile = line[x]
 
@@ -74,21 +77,13 @@ class Level:
                 # add entity to entity dict regardless of class
                 if newEntity:
                     self.entities[newEntity.id] = newEntity
-
-                if tile == "+":
-                    newEntityForMatrix = Entity(self.screen, x=x, y=y, name="Wall", solid=True)
-                else:
-                    newEntityForMatrix = Entity(self.screen, x=x, y=y, name="Walkable", solid=False)
-
-                # we only store static entities in the matrix
-                if newEntityForMatrix:
-                    self.matrix[y].append(newEntityForMatrix)
-
-        # print current map
-        for y in range(self.height):
-            for x in range(self.width):
-                print("+" if self.matrix[y][x].name == "Wall" else ".", end="")
-            print("\n", end="")
+                    if newEntity.name.find("wall") != -1:
+                        # we only store static entities in the matrix
+                        self.matrix[y].append(newEntity)
+                    else:
+                        # if the entity we store is not a wall we have to store a walkable for it
+                        self.matrix[y].append(Entity(self.screen, x=x, y=y, name="walkable", solid=False, sprite=f"sprites/{self.tileset}/walkable"))
+        print() # prints newline
 
     def draw(self):
         for ent in self.entities.values():

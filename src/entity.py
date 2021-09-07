@@ -16,6 +16,9 @@ class Entity:
         # surface to draw on
         self.surface = surface
 
+        # used for the main branch patch to get it in a working state
+        self.sprite = None
+
         self.id = Entity.lastIdUsed + 1
         Entity.lastIdUsed += 1
         Entity.entityCount += 1
@@ -35,15 +38,18 @@ class Entity:
     def updateSpritePosition(self, newX, newY):
         x = src.util.getPadding(newX, DrawInfo.X_OFFSET, 5)
         y = src.util.getPadding(newY, DrawInfo.Y_OFFSET, 5)
-        self.sprite = pygame.Rect(x, y, DrawInfo.CELL_WIDTH, DrawInfo.CELL_HEIGHT)
+        if not self.sprite:
+            self.sprite = pygame.Rect(x, y, DrawInfo.CELL_WIDTH, DrawInfo.CELL_HEIGHT)
 
     def draw(self):
 
-        colour = WALLSCOLOUR if self.name == "Wall" or self.name == "Walkable" \
-        else ENEMYCOLOUR if self.name == "Enemy" \
-        else PLAYERCOLOUR
+        colour = (0, 0, 0)
+        if not self.sprite:
+            colour = WALLSCOLOUR if self.name.find("wall") != -1 or self.name == "walkable" \
+            else ENEMYCOLOUR if self.name == "Enemy" \
+            else PLAYERCOLOUR
 
-        lineThickness = 1 if self.name == "Walkable" else 0
+        lineThickness = 1 if self.name == "walkable" else 0
 
         pygame.draw.rect(self.surface, colour, self.sprite, lineThickness)
 
