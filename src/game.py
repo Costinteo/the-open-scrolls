@@ -1,6 +1,7 @@
 import pygame
 import random
 import time
+import math
 from src.util import *
 from src.constants import *
 from src.entity import *
@@ -11,34 +12,48 @@ from src.combat import *
 successes, failures = pygame.init()
 print(f"{successes} successes and {failures} failures")
 
-
+# Game is a singleton class as it only gets instanced once
 class Game:
+    instance = None
     def __init__(self):
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        pygame.display.set_caption("The Open Scrolls")
-        self.clock = pygame.time.Clock()
+        if Game.instance:
+            raise Exception("Singleton class!")
+        else:
+            Game.instance = self
 
-        # used when player is in game, to change focus to level handling
-        self.inGame = True
-        self.currentLevel = Level("dungeon", self.screen)
+            self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+            pygame.display.set_caption("The Open Scrolls")
+            self.clock = pygame.time.Clock()
 
-        # used when player enters a menu so the game knows to pause
-        # and change focus to menu handling
-        self.inMenu = False
-        self.menu = None
+            # used when player is in game, to change focus to level handling
+            self.inGame = True
+            self.currentLevel = Level("dungeon", self.screen)
 
-        # used when player enters combat to change focus to combat handling
-        self.inCombat = False
-        self.combat = None
+            # used when player enters a menu so the game knows to pause
+            # and change focus to menu handling
+            self.inMenu = False
+            self.menu = None
 
-        self.timeSinceEnemyMovement = time.time()
+            # used when player enters combat to change focus to combat handling
+            self.inCombat = False
+            self.combat = None
+
+            self.timeSinceEnemyMovement = time.time()
+
+    @staticmethod
+    def getInstance():
+        if not Game.instance:
+            Game()
+
+        return Game.instance
+
 
     def update(self):
         # sleep to sync with fps
         self.clock.tick(FPS)
 
         # colour screen
-        self.screen.fill(BACKGROUNDCOLOUR)
+        self.screen.fill(NAVY)
 
         if not self.inCombat:
             for event in pygame.event.get():
@@ -61,11 +76,16 @@ class Game:
                 winner, loser = self.combat.update()
             self.inCombat = False
             if winner.id == self.currentLevel.player.id:
-                print("You win! Your life replenishes...")
-                self.currentLevel.player.attributes["HP"] = min(self.currentLevel.player.attributes["HP"] + 50, 100)
+                # Whenever the player wins an encounter, a random percent between 15%-30% of his max hp is replenished
+                hpAdded = math.ceil(random.randint(15, 30)/100 * self.currentLevel.player.attributes["HP"])
+                print("---------")
+                print(f"You win! Your life replenishes... {hpAdded} health healed.")
+                # take the minimum between the current HP + hpAdded and the max hp
+                self.currentLevel.player.hp = min(self.currentLevel.player.hp + hpAdded, self.currentLevel.player.attributes["HP"])
+                print(f"Current HP: {self.currentLevel.player.hp}")
                 self.killEnemy(loser)
             else:
-                print("You lose! Tamriel will succumb to Oblivion, despite your best efforts...")
+                print("Life fades from your eyes! Tamriel will succumb to Oblivion, despite your best efforts...")
                 exit()
 
 

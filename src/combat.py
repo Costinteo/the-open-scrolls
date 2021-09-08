@@ -25,8 +25,8 @@ class Combat:
 
     def update(self):
 
-        print(f"{self.combatants[0].name}: [HP:{self.combatants[0].attributes['HP']}]")
-        print(f"{self.combatants[1].name}: [HP:{self.combatants[1].attributes['HP']}]")
+        print(f"{self.combatants[0].name}: [HP:{self.combatants[0].hp}]")
+        print(f"{self.combatants[1].name}: [HP:{self.combatants[1].hp}]")
         print(f"{self.current.name}'s turn!")
         # only iterate through events and check for keys if player to play
         if self.current.id == self.getPlayerCharacter().id:
@@ -56,7 +56,7 @@ class Combat:
         self.current = self.combatants[self.toPlay]
         self.other = self.combatants[1 - self.toPlay]
 
-        # incremenet turn
+        # increment turn
         self.turn += 1
 
         # to have a distinction between turns

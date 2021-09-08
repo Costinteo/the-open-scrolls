@@ -15,9 +15,11 @@ class Entity:
 
         # surface to draw on
         self.surface = surface
-
-        # used for the main branch patch to get it in a working state
         self.sprite = None
+        if sprite:
+            picture = pygame.image.load(sprite)
+            picture = pygame.transform.scale(picture, (DrawInfo.CELL_WIDTH, DrawInfo.CELL_HEIGHT))
+            self.sprite = picture.convert_alpha()
 
         self.id = Entity.lastIdUsed + 1
         Entity.lastIdUsed += 1
@@ -25,6 +27,9 @@ class Entity:
 
         self.x = x
         self.y = y
+
+        self.drawX = src.util.getPadding(self.x, DrawInfo.X_OFFSET, 5)
+        self.drawY = src.util.getPadding(self.y, DrawInfo.Y_OFFSET, 5)
         # solid attribute will define collision
         self.solid = solid
         self.updateSpritePosition(self.x, self.y)
@@ -34,24 +39,21 @@ class Entity:
         self.y = newY
         self.updateSpritePosition(self.x, self.y)
 
-
     def updateSpritePosition(self, newX, newY):
-        x = src.util.getPadding(newX, DrawInfo.X_OFFSET, 5)
-        y = src.util.getPadding(newY, DrawInfo.Y_OFFSET, 5)
+        self.drawX = src.util.getPadding(newX, DrawInfo.X_OFFSET, 5)
+        self.drawY = src.util.getPadding(newY, DrawInfo.Y_OFFSET, 5)
         if not self.sprite:
-            self.sprite = pygame.Rect(x, y, DrawInfo.CELL_WIDTH, DrawInfo.CELL_HEIGHT)
+            self.sprite = pygame.Rect(self.drawX, self.drawY, DrawInfo.CELL_WIDTH, DrawInfo.CELL_HEIGHT)
 
     def draw(self):
 
-        colour = (0, 0, 0)
         if not self.sprite:
-            colour = WALLSCOLOUR if self.name.find("wall") != -1 or self.name == "walkable" \
-            else ENEMYCOLOUR if self.name == "Enemy" \
-            else PLAYERCOLOUR
+            colour = BLACK
+            lineThickness = 1 if self.name == "floor" else 0
 
-        lineThickness = 1 if self.name == "walkable" else 0
-
-        pygame.draw.rect(self.surface, colour, self.sprite, lineThickness)
+            pygame.draw.rect(self.surface, colour, self.sprite, lineThickness)
+        else:
+            self.surface.blit(self.sprite, (self.drawX, self.drawY))
 
     def __del__(self):
         Entity.entityCount -= 1

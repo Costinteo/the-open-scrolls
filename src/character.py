@@ -9,9 +9,9 @@ from src.entity import *
 # base class for enemies / players
 # they have attributes (placeholder / unfinished)
 class Character(Entity):
-    def __init__(self, surface, x = 0, y = 0, isPlayer = False, name = "DEFAULT", level = 1, exp = 0, HP = 100, STA = 100, MGK = 100, STR = 10, INT = 10, AGI = 10, LCK = 1, inventory = None):
+    def __init__(self, surface, x = 0, y = 0, isPlayer = False, name = "DEFAULT", level = 1, exp = 0, HP = 100, STA = 100, MGK = 100, STR = 10, INT = 10, AGI = 10, LCK = 1, inventory = None, sprite=None):
 
-        super().__init__(surface=surface, x=x, y=y, name=name)
+        super().__init__(surface=surface, x=x, y=y, name=name, sprite=sprite)
 
         self.level = level
         self.exp = exp
@@ -46,6 +46,12 @@ class Character(Entity):
         self.attributes["ST"] = STA     # Stamina
         self.attributes["MG"] = MGK     # Magicka
 
+        # these are the current values of the hp, stamina and magicka
+        # (the ones above means the max amount they can reach at the current char level)
+        self.hp = HP
+        self.st = STA
+        self.mg = MGK
+
         # extra attributes
         self.attributes["STR"] = STR    # Strength
         self.attributes["INT"] = INT    # Intelligence
@@ -56,19 +62,24 @@ class Character(Entity):
         self.isDead = False
 
     def updateSpritePosition(self, newX, newY):
-        x = src.util.getPadding(newX, src.constants.DrawInfo.X_OFFSET, 5)
-        y = src.util.getPadding(newY, src.constants.DrawInfo.Y_OFFSET, 5)
-        self.sprite = pygame.Rect(x + 5, y + 5, src.constants.DrawInfo.ENTITY_WIDTH, src.constants.DrawInfo.ENTITY_HEIGHT)
+        if not self.sprite:
+            self.drawX = src.util.getPadding(newX, src.constants.DrawInfo.X_OFFSET, 5)
+            self.drawY = src.util.getPadding(newY, src.constants.DrawInfo.Y_OFFSET, 5)
+            self.sprite = pygame.Rect(self.drawX + 5, self.drawY + 5, src.constants.DrawInfo.ENTITY_WIDTH, src.constants.DrawInfo.ENTITY_HEIGHT)
         # we add 5 to each coordinate to center the sprite on the tile,
         # considering the origin of the sprite is top left and the difference
         # in width and height between cells and dynamic entities is 10
+        else:
+            self.drawX = src.util.getPadding(newX, DrawInfo.X_OFFSET, 5)
+            self.drawY = src.util.getPadding(newY, DrawInfo.Y_OFFSET, 5)
 
     def draw(self):
+        if not self.sprite:
+            colour = GREEN if self.isPlayer else RED
 
-        colour = PLAYERCOLOUR if self.isPlayer else ENEMYCOLOUR
-
-        pygame.draw.rect(self.surface, colour, self.sprite)
-
+            pygame.draw.rect(self.surface, colour, self.sprite)
+        else:
+            self.surface.blit(self.sprite, (self.drawX, self.drawY))
 
     def addItemToInventory(self, item):
         self.inventory.append(item)
@@ -125,6 +136,6 @@ class Character(Entity):
         other.receiveDamage(value)
 
     def receiveDamage(self, value):
-        self.attributes["HP"] -= (value - math.ceil(self.getArmourRating() * 0.12))
+        self.hp -= (value - math.ceil(self.getArmourRating() * 0.12))
         print(f"{self.name} suffered {value - math.ceil(self.getArmourRating() * 0.12)} damage!")
-        self.isDead = self.attributes["HP"] <= 0
+        self.isDead = self.hp <= 0
