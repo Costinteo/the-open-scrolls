@@ -48,7 +48,7 @@ class Entity:
     def draw(self):
 
         if not self.sprite:
-            colour = WALLSCOLOUR
+            colour = BLACK
             lineThickness = 1 if self.name == "floor" else 0
 
             pygame.draw.rect(self.surface, colour, self.sprite, lineThickness)

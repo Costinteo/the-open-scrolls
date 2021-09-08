@@ -46,6 +46,12 @@ class Character(Entity):
         self.attributes["ST"] = STA     # Stamina
         self.attributes["MG"] = MGK     # Magicka
 
+        # these are the current values of the hp, stamina and magicka
+        # (the ones above means the max amount they can reach at the current char level)
+        self.hp = HP
+        self.st = STA
+        self.mg = MGK
+
         # extra attributes
         self.attributes["STR"] = STR    # Strength
         self.attributes["INT"] = INT    # Intelligence
@@ -69,7 +75,7 @@ class Character(Entity):
 
     def draw(self):
         if not self.sprite:
-            colour = PLAYERCOLOUR if self.isPlayer else ENEMYCOLOUR
+            colour = GREEN if self.isPlayer else RED
 
             pygame.draw.rect(self.surface, colour, self.sprite)
         else:
@@ -130,6 +136,6 @@ class Character(Entity):
         other.receiveDamage(value)
 
     def receiveDamage(self, value):
-        self.attributes["HP"] -= (value - math.ceil(self.getArmourRating() * 0.12))
+        self.hp -= (value - math.ceil(self.getArmourRating() * 0.12))
         print(f"{self.name} suffered {value - math.ceil(self.getArmourRating() * 0.12)} damage!")
-        self.isDead = self.attributes["HP"] <= 0
+        self.isDead = self.hp <= 0
