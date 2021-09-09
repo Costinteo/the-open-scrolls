@@ -53,21 +53,23 @@ class Level:
                 # see levels/template.map for legend
 
                 newEntity = None
-
+                tileName = None
+                isTileSolid = True
                 if tile == "-":
-                    newEntity = Entity(self.screen, x=x, y=y, name="horizontal_wall", solid=True, sprite=f"sprites/{self.tileset}/horizontal_wall.png")
+                    tileName = "horizontal_wall"
                 elif tile == "|":
-                    newEntity = Entity(self.screen, x=x, y=y, name="vertical_wall", solid=True, sprite=f"sprites/{self.tileset}/vertical_wall.png")
+                    tileName = "vertical_wall"
                 elif tile == "/":
-                    newEntity = Entity(self.screen, x=x, y=y, name="topleft_wall", solid=True, sprite=f"sprites/{self.tileset}/topleft_wall.png")
+                    tileName = "topleft_wall"
                 elif tile == "\\":
-                    newEntity = Entity(self.screen, x=x, y=y, name="topright_wall", solid=True, sprite=f"sprites/{self.tileset}/topright_wall.png")
+                    tileName = "topright_wall"
                 elif tile == "L":
-                    newEntity = Entity(self.screen, x=x, y=y, name="botleft_wall", solid=True, sprite=f"sprites/{self.tileset}/botleft_wall.png")
+                    tileName = "botleft_wall"
                 elif tile == "J":
-                    newEntity = Entity(self.screen, x=x, y=y, name="botright_wall", solid=True, sprite=f"sprites/{self.tileset}/botright_wall.png")
+                    tileName = "botright_wall"
                 elif tile == ".":
-                    newEntity = Entity(self.screen, x=x, y=y, name="floor", solid=False, sprite=f"sprites/{self.tileset}/floor.png")
+                    tileName = "floor"
+                    isTileSolid = False
                 elif tile == "P":
                     # only create the player if no current character is passed
                     # in constructor of level
@@ -79,6 +81,11 @@ class Level:
                         # TODO: implement save file that contains all player character data
                         inventory = src.util.DataParser.readInventoryData("[E]scimitar [E]iron_helmet")
                         self.player = Character(self.screen, x=x, y=y, name=name, isPlayer=True, level=lvl, exp=exp, HP=hp, STA=st, MGK=mg, STR=strg, INT=intl, AGI=agi, LCK=lck, inventory=inventory, sprite=f"sprites/Player.png")
+                    else:
+                        self.player.x = x
+                        self.player.y = y
+                        self.player.resetHP()
+                        self.player.updateSpritePosition(x, y)
 
                     newEntity = self.player
                 elif tile == "x":
@@ -89,6 +96,10 @@ class Level:
                     inventory = src.util.DataParser.readInventoryData(charData.readline())
                     newEntity = Character(self.screen, x=x, y=y, name=name, level=lvl, exp=exp, HP=hp, STA=st, MGK=mg, STR=strg, INT=intl, AGI=agi, LCK=lck, inventory=inventory, sprite=f"sprites/{charName}.png")
                     self.enemies[newEntity.id] = newEntity
+
+                # used to create static tiles
+                if tileName:
+                    newEntity = Entity(self.screen, x=x, y=y, name=tileName, solid=isTileSolid, sprite=f"sprites/{self.tileset}/{tileName}.png")
 
                 # add entity to entity dict regardless of class
                 if newEntity:

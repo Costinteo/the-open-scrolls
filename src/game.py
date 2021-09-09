@@ -27,7 +27,7 @@ class Game:
 
             # used when player is in game, to change focus to level handling
             self.inGame = True
-            self.currentLevel = Level("dungeon", self.screen)
+            self.currentLevel = Level("azuratemple01", self.screen)
 
             # used when player enters a menu so the game knows to pause
             # and change focus to menu handling
@@ -93,12 +93,19 @@ class Game:
 
         self.draw()
         pygame.display.flip()
+        if len(self.currentLevel.enemies) == 0:
+            self.changeLevel("azuratemple02")
 
     def draw(self):
         if not self.inCombat:
             self.currentLevel.draw()
         else:
             self.combat.draw()
+
+    def changeLevel(self, levelName):
+        player = self.currentLevel.player
+        # we pass the current player to the next level
+        self.currentLevel = Level(levelName, self.screen, player=player)
 
 # ----------- GAME LOGIC METHODS -----------
 

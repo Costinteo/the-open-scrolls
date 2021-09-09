@@ -81,6 +81,9 @@ class Character(Entity):
         else:
             self.surface.blit(self.sprite, (self.drawX, self.drawY))
 
+    def resetHP(self):
+        self.hp = self.attributes["HP"]
+
     def addItemToInventory(self, item):
         self.inventory.append(item)
 
