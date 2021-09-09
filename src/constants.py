@@ -46,3 +46,10 @@ class DrawInfo:
         # compared to a cell (static tiles)
         DrawInfo.ENTITY_WIDTH = DrawInfo.X_OFFSET - 10
         DrawInfo.ENTITY_HEIGHT = DrawInfo.Y_OFFSET - 10
+
+# for switching between the menus and the game
+FLAG_QUITGAME = 0
+FLAG_STARTGAME = 1
+FLAG_RESUMEGAME = 2
+FLAG_SETTINGSMENU = 3
+FLAG_MAINMENU = 4

@@ -7,6 +7,7 @@ from src.constants import *
 from src.entity import *
 from src.level import *
 from src.combat import *
+from src.menus import *
 
 # init pygame
 successes, failures = pygame.init()
@@ -26,13 +27,14 @@ class Game:
             self.clock = pygame.time.Clock()
 
             # used when player is in game, to change focus to level handling
-            self.inGame = True
-            self.currentLevel = Level("dungeon", self.screen)
+            self.inGame = False
+            self.currentLevel = None
 
             # used when player enters a menu so the game knows to pause
             # and change focus to menu handling
-            self.inMenu = False
-            self.menu = None
+            self.inMenu = True
+            self.menu = MainMenu.get_instance()
+            self.menu.set_screen(self.screen)
 
             # used when player enters combat to change focus to combat handling
             self.inCombat = False
@@ -47,6 +49,13 @@ class Game:
 
         return Game.instance
 
+    def switch_to_menu(self):
+        self.inMenu = True
+        self.inGame = False
+    
+    def switch_to_game(self):
+        self.inMenu = False
+        self.inGame = True
 
     def update(self):
         # sleep to sync with fps
@@ -55,50 +64,80 @@ class Game:
         # colour screen
         self.screen.fill(NAVY)
 
-        if not self.inCombat:
+        # menu event handling
+        if self.inMenu:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                flag = self.menu.handle_event(event)
+                # more flags for different menus can be added
+                if flag == FLAG_QUITGAME:
                     exit()
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    pass
-                elif event.type == pygame.KEYDOWN:
-                    # handle movement events
-                    if checkMovementEvent(event.key):
-                        self.handleMovementEvent(event.key)
-                        # print(self.currentLevel.player.x, self.currentLevel.player.y)
+                if flag == FLAG_STARTGAME:
+                    self.switch_to_game()
+                    # can be change depending on wanted starting level
+                    self.currentLevel = Level("dungeon", self.screen)
+                    break
+                if flag == FLAG_RESUMEGAME:
+                    self.switch_to_game()
+                    break
+                if flag == FLAG_SETTINGSMENU:
+                    self.switch_to_menu()
+                    self.menu = SettingsMenu.get_instance()
+                    self.menu.set_screen(self.screen)
+                    break
+                if flag == FLAG_MAINMENU:
+                    self.switch_to_menu()
+                    self.currentLevel = None
+                    self.menu = MainMenu.get_instance()
+                    self.menu.set_screen(self.screen)
+                    break
 
-            self.handleEnemyMovement()
-            self.checkForCombat()
-        else:
-            # combat.update() function is recursive
-            # it will only stop when one side wins
-            while not self.combat.current.isDead and not self.combat.other.isDead:
-                winner, loser = self.combat.update()
-            self.inCombat = False
-            if winner.id == self.currentLevel.player.id:
-                # Whenever the player wins an encounter, a random percent between 15%-30% of his max hp is replenished
-                hpAdded = math.ceil(random.randint(15, 30)/100 * self.currentLevel.player.attributes["HP"])
-                print("---------")
-                print(f"You win! Your life replenishes... {hpAdded} health healed.")
-                # take the minimum between the current HP + hpAdded and the max hp
-                self.currentLevel.player.hp = min(self.currentLevel.player.hp + hpAdded, self.currentLevel.player.attributes["HP"])
-                print(f"Current HP: {self.currentLevel.player.hp}")
-                self.killEnemy(loser)
+        # game loop event handling
+        if self.inGame:
+            if not self.inCombat:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        exit()
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        pass
+                    elif event.type == pygame.KEYDOWN:
+                        # handle movement events
+                        if checkMovementEvent(event.key):
+                            self.handleMovementEvent(event.key)
+                            # print(self.currentLevel.player.x, self.currentLevel.player.y)
+
+                self.handleEnemyMovement()
+                self.checkForCombat()
             else:
-                print("Life fades from your eyes! Tamriel will succumb to Oblivion, despite your best efforts...")
-                exit()
-
-
-        # print(self.inCombat)
+                # combat.update() function is recursive
+                # it will only stop when one side wins
+                while not self.combat.current.isDead and not self.combat.other.isDead:
+                    winner, loser = self.combat.update()
+                self.inCombat = False
+                if winner.id == self.currentLevel.player.id:
+                    # Whenever the player wins an encounter, a random percent between 15%-30% of his max hp is replenished
+                    hpAdded = math.ceil(random.randint(15, 30)/100 * self.currentLevel.player.attributes["HP"])
+                    print("---------")
+                    print(f"You win! Your life replenishes... {hpAdded} health healed.")
+                    # take the minimum between the current HP + hpAdded and the max hp
+                    self.currentLevel.player.hp = min(self.currentLevel.player.hp + hpAdded, self.currentLevel.player.attributes["HP"])
+                    print(f"Current HP: {self.currentLevel.player.hp}")
+                    self.killEnemy(loser)
+                else:
+                    print("Life fades from your eyes! Tamriel will succumb to Oblivion, despite your best efforts...")
+                    exit()
 
         self.draw()
         pygame.display.flip()
 
     def draw(self):
-        if not self.inCombat:
-            self.currentLevel.draw()
-        else:
-            self.combat.draw()
+        if self.inMenu:
+            pass
+
+        if self.inGame:
+            if not self.inCombat:
+                self.currentLevel.draw()
+            else:
+                self.combat.draw()
 
 # ----------- GAME LOGIC METHODS -----------
 
