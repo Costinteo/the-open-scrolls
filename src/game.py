@@ -61,9 +61,6 @@ class Game:
         # sleep to sync with fps
         self.clock.tick(FPS)
 
-        # colour screen
-        self.screen.fill(NAVY)
-
         # menu event handling
         if self.inMenu:
             for event in pygame.event.get():
@@ -97,9 +94,15 @@ class Game:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         exit()
-                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.type == pygame.MOUSEBUTTONDOWN:
                         pass
-                    elif event.type == pygame.KEYDOWN:
+                    if event.type == pygame.KEYDOWN:
+                        # pause menu
+                        if event.key == K_ESCAPE:
+                            self.switch_to_menu()
+                            self.menu = PauseMenu.get_instance()
+                            self.menu.set_screen(self.screen)
+                            break
                         # handle movement events
                         if checkMovementEvent(event.key):
                             self.handleMovementEvent(event.key)
@@ -131,9 +134,10 @@ class Game:
 
     def draw(self):
         if self.inMenu:
-            pass
-
+            self.screen.fill(BLACK)
+            self.menu.draw()
         if self.inGame:
+            self.screen.fill(NAVY)
             if not self.inCombat:
                 self.currentLevel.draw()
             else:

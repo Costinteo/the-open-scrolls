@@ -9,8 +9,9 @@ BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 NAVY = (10, 10, 80)
-FONT = "dejavusans"
 
+# Fonts
+FONT_DEFAULT = 'fonts/SDS_8x8.ttf'
 
 # Game related
 # unused
@@ -53,3 +54,6 @@ FLAG_STARTGAME = 1
 FLAG_RESUMEGAME = 2
 FLAG_SETTINGSMENU = 3
 FLAG_MAINMENU = 4
+FLAG_RESOLUTIONMENU = 5
+FLAG_AUDIOMENU = 6
+FLAG_SAVEGAME = 7
