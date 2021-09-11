@@ -13,14 +13,25 @@ class PlainText:
             pos : (x, y) - coordinates of the center *optional*
         """
         self.text = text
-        self.font = pygame.font.Font(font, size)
-        self.surface = self.font.render(self.text, True, const.WHITE)
+        self.font = font
+        self.size = size
+        font = pygame.font.Font(self.font, self.size)
+        self.surface = font.render(self.text, True, const.WHITE)
         self.rect = self.surface.get_rect()
         if pos is not None:
             self.position_center(pos)
 
     def position_center(self, pos):
         self.rect.center = pos
+
+    def recenter(self, width, height):
+        ratio_w, ratio_h = width / const.WIDTH, height / const.HEIGHT
+        self.size = int(self.size * ratio_w)
+        font = pygame.font.Font(self.font, self.size)
+        self.surface = font.render(self.text, True, const.WHITE)
+        old_rect = self.rect
+        self.rect = self.surface.get_rect()
+        self.position_center((old_rect.center[0] * ratio_w, old_rect.center[1] * ratio_h))
     
     def draw(self, screen):
         screen.blit(self.surface, self.rect)

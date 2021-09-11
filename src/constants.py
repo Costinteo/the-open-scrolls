@@ -1,3 +1,6 @@
+import pygame
+
+
 # Screen Size and others
 WIDTH, HEIGHT = 1280, 720
 PADDING = 60
@@ -12,6 +15,14 @@ NAVY = (10, 10, 80)
 
 # Fonts
 FONT_DEFAULT = 'fonts/SDS_8x8.ttf'
+SIZE_TITLE = int(WIDTH * 0.04)
+SIZE_BTTN = int(WIDTH * 0.025)
+
+# Sounds
+pygame.mixer.init()
+menu_bttn_move = pygame.mixer.Sound('sounds/menu_bttn_move.wav')
+menu_bttn_confirm = pygame.mixer.Sound('sounds/menu_bttn_confirm.wav')
+sounds = [menu_bttn_move, menu_bttn_confirm]
 
 # Game related
 # unused
@@ -53,3 +64,4 @@ class Flag:
     TOGAME = 0
     TOMENU = 1
     QUIT = 2
+    RESIZE = 3

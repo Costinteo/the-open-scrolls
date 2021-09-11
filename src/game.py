@@ -28,7 +28,7 @@ class Game:
 
             # used when player is in game, to change focus to level handling
             self.inGame = False
-            self.currentLevel = Level('dungeon', self.screen)
+            self.currentLevel = None
 
             # used when player enters a menu so the game knows to pause
             # and change focus to menu handling
@@ -70,13 +70,22 @@ class Game:
                     if flag == Flag.QUIT:
                         exit()
                     elif flag == Flag.TOGAME:
+                        # if entering the game from main menu without loading
+                        if self.currentLevel is None:
+                            self.currentLevel = Level('dungeon', self.screen)
                         self.switch_to_game()
                     elif flag == Flag.TOMENU and event_result is not None:
                         self.switch_to_menu()
                         self.menu = event_result
                         self.menu.set_screen(self.screen)
+                        # if exiting to main menu
+                        if self.menu.title == 'Main Menu':
+                            self.currentLevel = None
+                    elif flag == Flag.RESIZE:
+                        DrawInfo.update(src.constants.HEIGHT, src.constants.WIDTH)
+                        self.screen = pygame.display.set_mode((src.constants.WIDTH, src.constants.HEIGHT))
+                        self.menu.set_screen(self.screen)
                 
-
         # game loop event handling
         if self.inGame:
             if not self.inCombat:

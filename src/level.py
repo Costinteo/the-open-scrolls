@@ -26,6 +26,8 @@ class Level:
 
         self.parseLevelData(mapInfo, charData)
 
+    def set_screen(self, screen):
+        self.screen = screen
 
     def draw(self):
         for ent in self.entities.values():
