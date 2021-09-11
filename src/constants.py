@@ -49,11 +49,7 @@ class DrawInfo:
         DrawInfo.ENTITY_HEIGHT = DrawInfo.Y_OFFSET - 10
 
 # for switching between the menus and the game
-FLAG_QUITGAME = 0
-FLAG_STARTGAME = 1
-FLAG_RESUMEGAME = 2
-FLAG_SETTINGSMENU = 3
-FLAG_MAINMENU = 4
-FLAG_RESOLUTIONMENU = 5
-FLAG_AUDIOMENU = 6
-FLAG_SAVEGAME = 7
+class Flag:
+    TOGAME = 0
+    TOMENU = 1
+    QUIT = 2

@@ -28,12 +28,12 @@ class Game:
 
             # used when player is in game, to change focus to level handling
             self.inGame = False
-            self.currentLevel = None
+            self.currentLevel = Level('dungeon', self.screen)
 
             # used when player enters a menu so the game knows to pause
             # and change focus to menu handling
             self.inMenu = True
-            self.menu = MainMenu.get_instance()
+            self.menu = MENUS['Main Menu']
             self.menu.set_screen(self.screen)
 
             # used when player enters combat to change focus to combat handling
@@ -61,32 +61,21 @@ class Game:
         # sleep to sync with fps
         self.clock.tick(FPS)
 
+        self.screen.fill(NAVY)
         # menu event handling
         if self.inMenu:
             for event in pygame.event.get():
-                flag = self.menu.handle_event(event)
-                # more flags for different menus can be added
-                if flag == FLAG_QUITGAME:
-                    exit()
-                if flag == FLAG_STARTGAME:
-                    self.switch_to_game()
-                    # can be change depending on wanted starting level
-                    self.currentLevel = Level("dungeon", self.screen)
-                    break
-                if flag == FLAG_RESUMEGAME:
-                    self.switch_to_game()
-                    break
-                if flag == FLAG_SETTINGSMENU:
-                    self.switch_to_menu()
-                    self.menu = SettingsMenu.get_instance()
-                    self.menu.set_screen(self.screen)
-                    break
-                if flag == FLAG_MAINMENU:
-                    self.switch_to_menu()
-                    self.currentLevel = None
-                    self.menu = MainMenu.get_instance()
-                    self.menu.set_screen(self.screen)
-                    break
+                if self.menu.handle_event(event):
+                    flag, event_result = self.menu.handle_event(event)
+                    if flag == Flag.QUIT:
+                        exit()
+                    elif flag == Flag.TOGAME:
+                        self.switch_to_game()
+                    elif flag == Flag.TOMENU and event_result is not None:
+                        self.switch_to_menu()
+                        self.menu = event_result
+                        self.menu.set_screen(self.screen)
+                
 
         # game loop event handling
         if self.inGame:
@@ -100,7 +89,7 @@ class Game:
                         # pause menu
                         if event.key == K_ESCAPE:
                             self.switch_to_menu()
-                            self.menu = PauseMenu.get_instance()
+                            self.menu = MENUS['Pause Menu']
                             self.menu.set_screen(self.screen)
                             break
                         # handle movement events
@@ -133,11 +122,12 @@ class Game:
         pygame.display.flip()
 
     def draw(self):
-        if self.inMenu:
-            self.screen.fill(BLACK)
+        if self.inMenu and self.menu is not None:
+            if self.menu.title == 'Pause Menu':
+                self.currentLevel.draw()
             self.menu.draw()
+        
         if self.inGame:
-            self.screen.fill(NAVY)
             if not self.inCombat:
                 self.currentLevel.draw()
             else:
