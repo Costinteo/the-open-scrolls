@@ -12,6 +12,10 @@ from src.combat import *
 successes, failures = pygame.init()
 print(f"{successes} successes and {failures} failures")
 
+
+campaign = ["azuratemple01", "azuratemple02"]
+campaignIterator = 0
+
 # Game is a singleton class as it only gets instanced once
 class Game:
     instance = None
@@ -69,6 +73,7 @@ class Game:
 
             self.handleEnemyMovement()
             self.checkForCombat()
+
         else:
             # combat.update() function is recursive
             # it will only stop when one side wins
@@ -93,8 +98,6 @@ class Game:
 
         self.draw()
         pygame.display.flip()
-        if len(self.currentLevel.enemies) == 0:
-            self.changeLevel("azuratemple02")
 
     def draw(self):
         if not self.inCombat:
@@ -111,6 +114,8 @@ class Game:
 
     # handles player movement events
     def handleMovementEvent(self, key):
+        global campaignIterator
+        global campaign
 
         if key == pygame.K_UP:
             newX = self.currentLevel.player.x
@@ -130,6 +135,12 @@ class Game:
 
         if not src.util.isPositionSolid(self.currentLevel.matrix, newX, newY):
             self.currentLevel.player.move(newX, newY)
+        # checks if player touched door
+        if src.util.checkEntityOverlap(self.currentLevel.exitDoor, self.currentLevel.player):
+            # increment campaign iterator
+            campaignIterator += 1
+            campaignIterator %= len(campaign)
+            self.changeLevel(campaign[campaignIterator])
 
     # randomly moves enemies
     def handleEnemyMovement(self):

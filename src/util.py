@@ -12,6 +12,9 @@ def checkMovementEvent(key):
 def checkAttackChoice(key):
     return key == pygame.K_p or key == pygame.K_m
 
+def checkEntityOverlap(first, second):
+    return first.x == second.x and first.y == second.y
+
 def swap(a, b):
     a, b = b, a
 
@@ -22,8 +25,6 @@ def sleep(seconds):
 
 # strcmp() style function of comparing stats
 # but it returns strings informing of the result, for clarity
-
-
 def compareStat(statToCompare, firstChar, secondChar):
 
     # if firstChar has a greater attribute level than secondChar return 1

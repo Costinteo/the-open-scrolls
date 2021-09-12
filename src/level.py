@@ -24,6 +24,8 @@ class Level:
         self.enemies = dict()
         self.entities = dict()
 
+        self.exitDoor = None
+
         self.parseLevelData(mapInfo, charData)
 
 
@@ -70,6 +72,9 @@ class Level:
                 elif tile == ".":
                     tileName = "floor"
                     isTileSolid = False
+                elif tile == "@":
+                    tileName = "door"
+                    isTileSolid = False
                 elif tile == "P":
                     # only create the player if no current character is passed
                     # in constructor of level
@@ -100,11 +105,13 @@ class Level:
                 # used to create static tiles
                 if tileName:
                     newEntity = Entity(self.screen, x=x, y=y, name=tileName, solid=isTileSolid, sprite=f"sprites/{self.tileset}/{tileName}.png")
+                    if tileName == "door":
+                        self.exitDoor = newEntity
 
                 # add entity to entity dict regardless of class
                 if newEntity:
                     self.entities[newEntity.id] = newEntity
-                    if newEntity.name.find("wall") != -1:
+                    if newEntity.name.find("wall") != -1 or newEntity.name.find("door") != -1:
                         # we only store static entities in the matrix
                         self.matrix[y].append(newEntity)
                     else:
@@ -112,4 +119,5 @@ class Level:
                         floorBelowEntity = Entity(self.screen, x=x, y=y, name="floor", solid=False, sprite=f"sprites/{self.tileset}/floor.png")
                         self.matrix[y].append(floorBelowEntity)
                         self.entities[floorBelowEntity.id] = floorBelowEntity
+
         print() # prints newline
