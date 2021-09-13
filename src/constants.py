@@ -1,3 +1,6 @@
+import pygame
+
+
 # Screen Size and others
 WIDTH, HEIGHT = 1280, 720
 PADDING = 60
@@ -9,8 +12,19 @@ BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 NAVY = (10, 10, 80)
-FONT = "dejavusans"
+BLUEBRICK = (77, 73, 77)
+MENU_BG = (5, 1, 5)
 
+# Fonts
+FONT_DEFAULT = 'fonts/SDS_8x8.ttf'
+SIZE_TITLE = int(WIDTH * 0.04)
+SIZE_BTTN = int(WIDTH * 0.025)
+
+# Sounds
+pygame.mixer.init()
+menu_bttn_move = pygame.mixer.Sound('sounds/menu_bttn_move.wav')
+menu_bttn_confirm = pygame.mixer.Sound('sounds/menu_bttn_confirm.wav')
+sounds = [menu_bttn_move, menu_bttn_confirm]
 
 # Game related
 # unused
@@ -46,3 +60,11 @@ class DrawInfo:
         # compared to a cell (static tiles)
         DrawInfo.ENTITY_WIDTH = DrawInfo.X_OFFSET - 10
         DrawInfo.ENTITY_HEIGHT = DrawInfo.Y_OFFSET - 10
+
+# for switching between the menus and the game
+class Flag:
+    TOGAME = 0
+    TOMENU = 1
+    QUIT = 2
+    RESIZE = 3
+    COMBAT_EVENT = 4

@@ -2,7 +2,7 @@ Level name
 Tileset name
 Height Width
 # MAP described below in characters:
-/---------o----\
+/--------------\
 |P.......|-|...|
 |........|.|.-.|
 |.....---J.|...|
@@ -10,7 +10,7 @@ Height Width
 |............|.|
 |.....|........|
 |..x..|....x...|
-L-----o--------J
+L--------------J
 
 # LEGEND:
 # . : Walkable
@@ -20,6 +20,6 @@ L-----o--------J
 # \ : Top Right Corner Wall
 # L : Bottom Left Corner Wall
 # J : Bottom Right Corner Wall
-# o : Top Wall
+# @ : Door
 # x : Enemy
 # P : Player

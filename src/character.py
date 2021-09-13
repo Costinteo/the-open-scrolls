@@ -131,11 +131,16 @@ class Character(Entity):
             damage = math.ceil((random.randint(80,120) / 100) * item.damage + 0.2 * self.attributes[item.specialization] - 0.3 * (not self.isItemEquipped(item)))
         print(f"{self.name} attacked with {item.name}!")
         self.dealDamage(other, damage)
+        return damage
 
     def dealDamage(self, other, value):
         other.receiveDamage(value)
 
     def receiveDamage(self, value):
         self.hp -= (value - math.ceil(self.getArmourRating() * 0.12))
+        self.attributes['HP'] = self.hp
         print(f"{self.name} suffered {value - math.ceil(self.getArmourRating() * 0.12)} damage!")
         self.isDead = self.hp <= 0
+    
+    def resetHP(self):
+        self.hp = self.attributes["HP"]
