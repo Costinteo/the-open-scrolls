@@ -141,3 +141,6 @@ class Character(Entity):
         self.attributes['HP'] = self.hp
         print(f"{self.name} suffered {value - math.ceil(self.getArmourRating() * 0.12)} damage!")
         self.isDead = self.hp <= 0
+    
+    def resetHP(self):
+        self.hp = self.attributes["HP"]

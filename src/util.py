@@ -15,6 +15,9 @@ def checkAttackChoice(key):
 def swap(a, b):
     a, b = b, a
 
+def checkEntityOverlap(first, second):
+    return first.x == second.x and first.y == second.y
+
 def sleep(seconds):
     t = time.time()
     while time.time() - t < seconds:

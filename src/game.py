@@ -12,11 +12,9 @@ from src.menus import *
 campaign = ["azuratemple01", "azuratemple02"]
 campaignIterator = 0
 
-
 # init pygame
 successes, failures = pygame.init()
 print(f"{successes} successes and {failures} failures")
-
 
 # Game is a singleton class as it only gets instanced once
 class Game:
@@ -78,7 +76,7 @@ class Game:
                     elif flag == Flag.TOGAME:
                         # if entering the game from main menu without loading
                         if self.currentLevel is None:
-                            self.currentLevel = Level('dungeon', self.screen)
+                            self.currentLevel = Level(campaign[campaignIterator], self.screen)
                         self.switch_to_game()
                     elif flag == Flag.TOMENU and event_result is not None:
                         self.switch_to_menu()
