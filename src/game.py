@@ -9,6 +9,9 @@ from src.level import *
 from src.combat import *
 from src.menus import *
 
+campaign = ["azuratemple01", "azuratemple02"]
+campaignIterator = 0
+
 # init pygame
 successes, failures = pygame.init()
 print(f"{successes} successes and {failures} failures")
@@ -147,6 +150,7 @@ class Game:
 
     # handles player movement events
     def handleMovementEvent(self, key):
+        global campaign, campaignIterator
 
         if key == pygame.K_UP:
             newX = self.currentLevel.player.x
@@ -166,6 +170,17 @@ class Game:
 
         if not src.util.isPositionSolid(self.currentLevel.matrix, newX, newY):
             self.currentLevel.player.move(newX, newY)
+        # checks if player touched door
+        if src.util.checkEntityOverlap(self.currentLevel.exitDoor, self.currentLevel.player):
+            # increment campaign iterator
+            campaignIterator += 1
+            campaignIterator %= len(campaign)
+            self.changeLevel(campaign[campaignIterator])
+
+    def changeLevel(self, levelName):
+        player = self.currentLevel.player
+        # we pass the current player to the next level
+        self.currentLevel = Level(levelName, self.screen, player=player)
 
     # randomly moves enemies
     def handleEnemyMovement(self):
