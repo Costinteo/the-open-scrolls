@@ -13,6 +13,7 @@ from src.menus import *
 successes, failures = pygame.init()
 print(f"{successes} successes and {failures} failures")
 
+
 # Game is a singleton class as it only gets instanced once
 class Game:
     instance = None
