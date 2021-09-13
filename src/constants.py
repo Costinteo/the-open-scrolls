@@ -12,6 +12,8 @@ BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 NAVY = (10, 10, 80)
+BLUEBRICK = (77, 73, 77)
+MENU_BG = (5, 1, 5)
 
 # Fonts
 FONT_DEFAULT = 'fonts/SDS_8x8.ttf'
@@ -65,3 +67,4 @@ class Flag:
     TOMENU = 1
     QUIT = 2
     RESIZE = 3
+    COMBAT_EVENT = 4

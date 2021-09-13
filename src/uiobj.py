@@ -33,8 +33,24 @@ class PlainText:
         self.rect = self.surface.get_rect()
         self.position_center((old_rect.center[0] * ratio_w, old_rect.center[1] * ratio_h))
     
+    def set_text(self, text, size=None):
+        if size:
+            self.size = size
+        font = pygame.font.Font(self.font, self.size)
+        self.text = text
+        self.surface = font.render(self.text, True, const.WHITE)
+        old_rect = self.rect
+        self.rect = self.surface.get_rect()
+        self.position_center((old_rect.center[0], old_rect.center[1]))
+    
     def draw(self, screen):
         screen.blit(self.surface, self.rect)
+    
+    def move(self, new_x, new_y):
+        self.position_center((new_x, new_y))
+    
+    def out_of_bounds(self):
+        return self.rect.center[0] <= 0 or self.rect.center[1] <= 0 or self.rect.center[0] >= const.WIDTH or self.rect.center[1] >= const.HEIGHT
 
 
 class Button(PlainText):
@@ -59,5 +75,5 @@ class Button(PlainText):
     
     def draw(self, screen):
         if self.selected:
-            pygame.draw.circle(screen, const.WHITE, (self.rect.left - 30, self.rect.center[1]), 10)
+            pygame.draw.circle(screen, const.WHITE, (self.rect.left - 30, self.rect.center[1]), const.WIDTH * 0.008)
         screen.blit(self.surface, self.rect)

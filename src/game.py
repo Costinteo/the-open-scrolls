@@ -41,6 +41,7 @@ class Game:
             self.combat = None
 
             self.timeSinceEnemyMovement = time.time()
+            self.title_screen = Level('title_screen', self.screen)
 
     @staticmethod
     def getInstance():
@@ -61,7 +62,7 @@ class Game:
         # sleep to sync with fps
         self.clock.tick(FPS)
 
-        self.screen.fill(NAVY)
+        self.screen.fill(BLUEBRICK)
         # menu event handling
         if self.inMenu:
             for event in pygame.event.get():
@@ -82,10 +83,10 @@ class Game:
                         if self.menu.title == 'Main Menu':
                             self.currentLevel = None
                     elif flag == Flag.RESIZE:
-                        DrawInfo.update(src.constants.HEIGHT, src.constants.WIDTH)
                         self.screen = pygame.display.set_mode((src.constants.WIDTH, src.constants.HEIGHT))
                         self.menu.set_screen(self.screen)
-                
+                        self.title_screen = Level('title_screen', self.screen)
+
         # game loop event handling
         if self.inGame:
             if not self.inCombat:
@@ -132,15 +133,14 @@ class Game:
 
     def draw(self):
         if self.inMenu and self.menu is not None:
+            if self.menu.title in ['Main Menu', 'Settings Menu', 'Resolution Menu', 'Audio Menu']:
+                self.title_screen.draw()
             if self.menu.title == 'Pause Menu':
                 self.currentLevel.draw()
             self.menu.draw()
         
         if self.inGame:
-            if not self.inCombat:
-                self.currentLevel.draw()
-            else:
-                self.combat.draw()
+            self.currentLevel.draw()
 
 # ----------- GAME LOGIC METHODS -----------
 
@@ -190,5 +190,5 @@ class Game:
         for enemy in self.currentLevel.enemies.values():
             if enemy.x == self.currentLevel.player.x and enemy.y == self.currentLevel.player.y:
                 self.inCombat = True
-                self.combat = Combat(self.currentLevel.player, enemy)
+                self.combat = Combat(self.currentLevel.player, enemy, self.screen)
                 break
