@@ -12,6 +12,7 @@ from src.menus import *
 campaign = ["azuratemple01", "azuratemple02"]
 campaignIterator = 0
 
+
 # init pygame
 successes, failures = pygame.init()
 print(f"{successes} successes and {failures} failures")
